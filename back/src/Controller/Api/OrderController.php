@@ -18,7 +18,6 @@ class OrderController extends ApiController
     public function postOrder(Request $request, OrderService $orderService)
     {
         return $orderService->createOrder($request);
-
     }
     
 }

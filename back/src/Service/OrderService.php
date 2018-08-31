@@ -25,8 +25,8 @@ class OrderService {
         
     
         $order = new Order();
-        $order->setCity('Torrejón de Ardoz');
-        $this->orderRepository->create($order);
+        $order->setOrderRef('P0123ABC');
+        //$this->orderRepository->create($order);
 
         return $this->response($order, Response::HTTP_CREATED);
     }
