@@ -1,0 +1,5 @@
+#Note: use your own resource/directory as you prefer
+rest_controller:
+    resource: ../../src/Controller/Api/
+    type: annotation
+    prefix: /api
