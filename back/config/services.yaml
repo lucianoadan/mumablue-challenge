@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    locale: 'en'
 
 services:
     # default configuration for services in *this* file
@@ -29,11 +30,15 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Service\OrderService:
-        shared: false
+    App\Service\impl\ShipmentService: ~
+    App\Service\impl\UpsDeliveryService: ~
 
-    App\Utils\Ups\UpsConfig:
-        shared: false
+    # Added DeliveryInterface to be able to easily change Shipping Provider
+    App\Service\DeliveryServiceInterface: '@App\Service\impl\UpsDeliveryService'
+    App\Service\ShipmenterviceInterface: '@App\Service\impl\ShipmentService'
+    
+    # UPS Api credentials container
+    App\Utils\Ups\UpsConfig: ~
 
     get_set_method_normalizer:
         class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer

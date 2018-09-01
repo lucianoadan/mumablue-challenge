@@ -8,11 +8,14 @@
         "friendsofsymfony/rest-bundle": "^2.4",
         "gabrielbull/ups-api": "^0.8.0",
         "jms/serializer": "^1.13",
+        "pmill/doctrine-array-hydrator": "^0.1.5",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
+        "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
         "symfony/serializer": "*",
+        "symfony/validator": "*",
         "symfony/yaml": "*"
     },
     "require-dev": {
