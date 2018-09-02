@@ -2,68 +2,70 @@
 
 namespace App\Service\impl;
 
-use App\Entity\{Address, Shipment};
+use App\Entity\Shipment;
 use App\Repository\ShipmentRepository;
+use App\Service\CarrierServiceInterface;
 use App\Service\ShipmentServiceInterface;
+use App\Utils\Api\ApiResponse;
+use App\Validator\ShipmentRequestValidator;
+use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ShipmentService implements ShipmentServiceInterface
 {
 
     private $shipmentRepository;
-    private $hydrator;
+    private $carrierService;
+    private $serializer;
 
-    public function __construct(ShipmentRepository $shipmentRepository)
+    public function __construct(ShipmentRepository $shipmentRepository, CarrierServiceInterface $carrierService, SerializerInterface $serializer)
     {
+
         $this->shipmentRepository = $shipmentRepository;
+        $this->carrierService = $carrierService;
+        $this->serializer = $serializer;
     }
 
-    public function createShipment($request): Shipment
+    public function createShipment(Request $request): JsonResponse
     {
 
+        $response = new ApiResponse($this->serializer);
+        $validator = new ShipmentRequestValidator();
+
         $data = $request->request->all();
+        $validator->validate($data);
 
-        // set data
-        $shipment = new Shipment();
-        $shipment->setOrderRef($data['orderRef']);
-        $shipment->setTrackingNum('xxxx');
-        $shipment->setDeliveryComment($data['deliveryComment']);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
 
-        $billingAddress = new Address();
-        $billingAddress->setAddress($data['billingAddress']['address']);
-        $billingAddress->setAddress2($data['billingAddress']['address2']);
-        $billingAddress->setCity($data['billingAddress']['city']);
-        $billingAddress->setZip($data['billingAddress']['zip']);
-        $billingAddress->setState($data['billingAddress']['state']);
-        $billingAddress->setCountry($data['billingAddress']['country']);
-        $billingAddress->setFirstname($data['billingAddress']['firstname']);
-        $billingAddress->setLastname($data['billingAddress']['lastname']);
-        $billingAddress->setPhone($data['billingAddress']['phone']);
-        $billingAddress->setEmail($data['billingAddress']['email']);
-
-        if ($data['sameAddresses']) {
-            $deliveryAddress = $billingAddress;
-        } else {
-            $deliveryAddress = new Address();
-            $deliveryAddress->setAddress($data['deliveryAddress']['address']);
-            $deliveryAddress->setAddress2($data['deliveryAddress']['address2']);
-            $deliveryAddress->setCity($data['deliveryAddress']['city']);
-            $deliveryAddress->setZip($data['deliveryAddress']['zip']);
-            $deliveryAddress->setState($data['deliveryAddress']['state']);
-            $deliveryAddress->setCountry($data['deliveryAddress']['country']);
-            $deliveryAddress->setFirstname($data['deliveryAddress']['firstname']);
-            $deliveryAddress->setLastname($data['deliveryAddress']['lastname']);
-            $deliveryAddress->setPhone($data['deliveryAddress']['phone']);
-            $deliveryAddress->setEmail($data['deliveryAddress']['email']);
+            $response->setErrors($errors);
+            $response->setMessage('Shipment creation request failed.');
+            $response->setHttpStatus(Response::HTTP_BAD_REQUEST);
+            return $response->getJsonResponse();
         }
 
-        $shipment->setBillingAddress($billingAddress);
-        $shipment->setDeliveryAddress($deliveryAddress);
+        $shipment = Shipment::fill($data);
+        try {
+            $this->carrierService->ship($shipment);
+        } catch (Exception $ex) {
+            $response->setHttpStatus(Response::HTTP_BAD_REQUEST);
+            $response->setMessageWithError('Carrier Error: ' . $ex->getMessage());
+            return $response->getJsonResponse();
+        }
+        try {
+            $this->shipmentRepository->create($shipment);
+            $response->setPayload($shipment);
+            $response->setHttpStatus(Response::HTTP_CREATED);
+        } catch (Exception $ex) {
+            $response->setHttpStatus(Response::HTTP_BAD_REQUEST);
+            $response->setMessageWithError('Unexpected error. Consult log for details.');
 
+        }
 
-        
-        $this->shipmentRepository->create($shipment);
-
-        return $shipment;
+        return $response->getJsonResponse();
     }
 
 }

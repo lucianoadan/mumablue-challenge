@@ -31,16 +31,24 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Service\impl\ShipmentService: ~
-    App\Service\impl\UpsDeliveryService: ~
+    App\Service\ShipmentServiceInterface: '@App\Service\impl\ShipmentService'
 
-    # Added DeliveryInterface to be able to easily change Shipping Provider
-    App\Service\DeliveryServiceInterface: '@App\Service\impl\UpsDeliveryService'
-    App\Service\ShipmenterviceInterface: '@App\Service\impl\ShipmentService'
-    
-    # UPS Api credentials container
+    App\Service\impl\UpsCarrierService: ~
+
+    # Added CarrierInterface to be able to easily change Shipping Provider
+    App\Service\CarrierServiceInterface: '@App\Service\impl\UpsCarrierService'
     App\Utils\Ups\UpsConfig: ~
 
+   
+    # Serializer
     get_set_method_normalizer:
         class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
         public: false
         tags: [serializer.normalizer]
+
+    # Service aliases used for testing
+    app.shipment_service:
+        alias: App\Service\ShipmentServiceInterface
+        public: true
+
+    

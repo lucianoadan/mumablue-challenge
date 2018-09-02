@@ -20,8 +20,7 @@ class ShipmentRepository extends ServiceEntityRepository
     }
 
     public function create(Shipment $shipment){
-        $this->getEntityManager()->persist($shipment->getBillingAddress());
-        $this->getEntityManager()->persist($shipment->getDeliveryAddress());
+        $this->getEntityManager()->persist($shipment->getShipToAddr());
         $this->getEntityManager()->persist($shipment);
         $this->getEntityManager()->flush();
 

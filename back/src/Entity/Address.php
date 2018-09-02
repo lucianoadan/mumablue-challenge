@@ -9,12 +9,24 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address
 {
+    public function __construct()
+    {
+        $this->address2 = null;
+        $this->companyName = null;
+        $this->firstname = '';
+        $this->lastname = '';
+    }
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $companyName;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -187,7 +199,47 @@ class Address
     public function setPhone(string $phone): self
     {
         $this->phone = $phone;
-
         return $this;
     }
+
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    public function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+        return $this;
+    }
+
+    public function getAttentionName()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
+    public static function fill($data): ?Address
+    {
+        $address = new Address();
+        $address->setAddress($data['address']);
+        if (isset($data['address2'])) {
+            $address->setAddress2($data['address2']);
+        }
+        if (isset($data['companyName'])) {
+            $address->setCompanyName($data['companyName']);
+        }
+
+        ;
+        $address->setCity($data['city']);
+        $address->setZip($data['zip']);
+        $address->setState($data['state']);
+        $address->setCountry($data['country']);
+        $address->setFirstname($data['firstname']);
+        $address->setLastname($data['lastname']);
+        $address->setPhone($data['phone']);
+        $address->setEmail($data['email']);
+
+        return $address;
+    }
+
 }

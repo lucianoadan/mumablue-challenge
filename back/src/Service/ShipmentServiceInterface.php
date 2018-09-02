@@ -2,11 +2,12 @@
 
 namespace App\Service;
 
-use App\Entity\Shipment;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
+interface ShipmentServiceInterface
+{
 
-interface ShipmentServiceInterface {
-    
-    public function createShipment($request) : Shipment;
-    
+    public function createShipment(Request $request): JsonResponse;
+
 }

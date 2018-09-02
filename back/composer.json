@@ -7,8 +7,10 @@
         "ext-iconv": "*",
         "friendsofsymfony/rest-bundle": "^2.4",
         "gabrielbull/ups-api": "^0.8.0",
+        "guzzlehttp/guzzle": "^6.3",
         "jms/serializer": "^1.13",
         "pmill/doctrine-array-hydrator": "^0.1.5",
+        "rakit/validation": "^0.18.1",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
@@ -16,13 +18,15 @@
         "symfony/orm-pack": "^1.0",
         "symfony/serializer": "*",
         "symfony/validator": "*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+        "vlucas/valitron": "^1.4"
     },
     "require-dev": {
         "symfony/browser-kit": "*",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.7",
-        "symfony/phpunit-bridge": "*"
+        "symfony/phpunit-bridge": "*",
+        "symfony/profiler-pack": "^1.0"
     },
     "config": {
         "preferred-install": {

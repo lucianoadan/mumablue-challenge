@@ -3,12 +3,18 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use \Datetime;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
  */
 class Shipment
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -18,6 +24,7 @@ class Shipment
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $orderRef;
 
@@ -27,21 +34,32 @@ class Shipment
     private $trackingNum;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=true))
      */
-    private $billingAddress;
+    private $labelPath;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
-    private $deliveryAddress;
+    private $shipToAddr;
 
     /**
      * @ORM\Column(type="string", length=1000, nullable=true)
      */
     private $deliveryInstructions;
+
+    /**
+     * @ORM\Column(type="datetime", nullable = false)
+     * @Assert\NotNull()
+     */
+    private $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -53,6 +71,11 @@ class Shipment
         return $this->trackingNum;
     }
 
+    public function getCreatedAt(): ?Datetime
+    {
+        return $this->createdAt;
+    }
+
     public function setTrackingNum(string $trackingNum): self
     {
         $this->trackingNum = $trackingNum;
@@ -60,26 +83,14 @@ class Shipment
         return $this;
     }
 
-    public function getBillingAddress(): ?Address
+    public function getShipToAddr(): ?Address
     {
-        return $this->billingAddress;
+        return $this->shipToAddr;
     }
 
-    public function setBillingAddress(Address $billingAddress): self
+    public function setShipToAddr(Address $shipToAddr): self
     {
-        $this->billingAddress = $billingAddress;
-
-        return $this;
-    }
-
-    public function getDeliveryAddress(): ?Address
-    {
-        return $this->deliveryAddress;
-    }
-
-    public function setDeliveryAddress(Address $deliveryAddress): self
-    {
-        $this->deliveryAddress = $deliveryAddress;
+        $this->shipToAddr = $shipToAddr;
 
         return $this;
     }
@@ -107,4 +118,38 @@ class Shipment
 
         return $this;
     }
+
+    public function getLabelUrl(){
+        if($this->labelPath !== null)
+            return getenv('APP_BASEURL').'/'.$this->labelPath;
+
+        return null;
+    }
+
+    public function getLabelPath()
+    {
+        return $this->labelPath;
+    }
+
+    public function setLabelPath($labelPath)
+    {
+        $this->labelPath = $labelPath;
+
+        return $this;
+    }
+
+    public static function fill($data): ?Shipment
+    {
+        $shipment = new Shipment();
+        $shipment->setOrderRef($data['orderRef']);
+
+        if (isset($data['deliveryInstructions'])) {
+            $shipment->setDeliveryInstructions($data['deliveryInstructions']);
+        }
+
+        $shipment->setShipToAddr(Address::fill($data['shipToAddr']));
+
+        return $shipment;
+    }
+
 }
