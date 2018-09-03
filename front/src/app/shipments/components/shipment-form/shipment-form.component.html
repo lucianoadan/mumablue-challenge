@@ -1,9 +1,48 @@
 <div *ngIf="shipment">
     <div class="card">
-        <div class="card-header">
-            Pedido {{ orderRef }}
-        </div>
+
         <div class="card-body">
+            <h4 class="card-title mb-3">Pedido {{ orderRef }}</h4>
+            <!-- FORM -->
+            <div class="row">
+                <div class="col-md-6">
+                    <app-form-field label="Nombre"></app-form-field>
+                </div>
+                <div class="col-md-6">
+                    <app-form-field label="Apellidos"></app-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <app-form-field label="Email"></app-form-field>
+                </div>
+                <div class="col-md-6">
+                    <app-form-field label="Télefono"></app-form-field>
+                </div>
+            </div>
+            <app-form-field label="Dirección"></app-form-field>
+            <app-form-field label="Datos dirección adicional"></app-form-field>
+            <div class="row">
+                <div class="col-md-8">
+                    <app-form-field label="Ciudad"></app-form-field>
+                </div>
+                <div class="col-md-4">
+                    <app-form-field label="C. Postal"></app-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <app-form-field label="Provincia"></app-form-field>
+                </div>
+                <div class="col-md-6">
+                    <app-form-field label="País" type="select" [values]="countryOptions"></app-form-field>
+                </div>
+
+            </div>
+
+            <app-form-field label="Empresa"></app-form-field>
+            <!-- /FORM -->
+
             <div class="text-right">
                 <a href="#" class="btn btn-primary">Guardar</a>
             </div>

@@ -1,0 +1,11 @@
+
+body {
+    background:#eef5f9;
+    color:#607188;
+}
+
+.blue-gradient{
+    background: -webkit-linear-gradient(50deg,#45cafc,#303f9f)!important;
+    background: -o-linear-gradient(50deg,#45cafc,#303f9f)!important;
+    background: linear-gradient(40deg,#45cafc,#303f9f)!important;
+}

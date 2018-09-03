@@ -1,0 +1,35 @@
+<div [ngClass]="opened ? 'opened' : 'closed'" class="card shipment-list-item">
+    <div class="card-header white" (click)="toggle()">
+        <strong>{{ orderRef }}</strong>
+
+        <span [ngClass]="lastStatus.tags.indexOf('alert') > -1 ? 'text-danger' : 'text-cyan'" *ngIf="lastStatus" class="shipment-status">
+            {{ lastStatus.title }}
+        </span>
+    </div>
+    <div class="card-body shipment-details">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Code</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Hour</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let s of statuses" [ngClass]="s.tags.indexOf('alert') > -1 ? 'text-danger' : ''">
+                            <td>{{ s.code }}</td>
+                            <td>{{ s.title }}</td>
+                            <td>{{ s.updatedAt | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{ s.updatedAt | date: 'HH:mm'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</div>

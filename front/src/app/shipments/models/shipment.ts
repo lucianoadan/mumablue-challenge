@@ -1,17 +1,44 @@
+import { STATUSES } from '../services/mocks/statuses';
 import { Address } from './address';
+import { Status } from './status';
+import { ShipmentStatus } from './shipment-status';
 
 export interface Shipment {
     id: number;
     orderRef: string;
     deliveryInstructions: string;
     shipToAddr: Address;
+    statuses: ShipmentStatus[];
 }
 
-export function genMockShipment() {
+export function genMockShipmentList() {
+    let list = [];
+    for (let i = 0; i < 5; i++)
+        list.push(genMockShipment(i + 1));
+    return list;
+
+}
+export function genMockShipment(id = 1) {
+
+    function randomDate(start, end) {
+        return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    }
+
+    
+
+    let rs = [];
+    let n = Math.floor(Math.random() * 5)+1;
+    let s;
+    for (let i = 0; i < n; i++) {
+        s = STATUSES[Math.floor(Math.random() * STATUSES.length)];
+        s.updatedAt = randomDate(new Date(2012, 0, 1), new Date());
+        rs.push(s);
+    }
+
     return {
-        id: 1,
-        orderRef: "P0001",
-        deliveryInstructions: "payaso",
+        id: id,
+        orderRef: "P000" + id,
+        deliveryInstructions: "some instr",
         shipToAddr: {
             id: 1,
             address: "string",
@@ -22,6 +49,7 @@ export function genMockShipment() {
             country: "",
             phone: "",
             email: ""
-        }
+        },
+        statuses: rs
     }
 }

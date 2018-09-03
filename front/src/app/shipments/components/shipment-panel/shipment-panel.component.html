@@ -1,18 +1,23 @@
-<div class="container">
-    <h1></h1>
-    <div class="jumbotron">
-        <h2>Gestión pedidos</h2>
+<div class="shipment-panel">
+    <div class="sidebar">
+        <div class="main-action">
+            <button type="button" class="btn btn-block btn-primary">
+                <i class="fas fa-shipping-fast"></i> Nuevo envío
+            </button>
+        </div>
+        <ul class="shipment-filter-list">
+            <li (click)="selectGroup(g)" [ngClass]="selectedGroup == g ? 'active' : ''" *ngFor="let g of statusGroups">
+                <span><i class="fas {{g.icon}}"></i></span>
+                {{g.title }}
+            </li>
+        </ul>
+        <hr/>
+        <ul class="shipment-filter-list">
+                <li (click)="selectStatus(s)" [ngClass]="selectedStatus == s ? 'active' : ''" *ngFor="let s of statuses">{{ s.title }}</li>
+        </ul>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <!-- List : Maybe a ShipmentListComponent ? -->
-            <ul class="list-group">
-                <li class="list-group-item">P001232</li>
-            </ul>
-            <!-- /List-->
-        </div>
-        <div class="col-md-9">
-            <app-shipment-form [shipment]="shipment"></app-shipment-form>
-        </div>
+
+    <div class="content">
+        <app-shipment-list [shipments]="shipments"></app-shipment-list>
     </div>
 </div>

@@ -26,6 +26,8 @@
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/platform-server": "^6.1.0",
     "@angular/router": "^6.1.0",
+    "@fortawesome/angular-fontawesome": "^0.1.1",
+    "@fortawesome/free-regular-svg-icons": "^5.3.1",
     "@ng-bootstrap/ng-bootstrap": "^3.2.0",
     "@ngrx/db": "^2.2.0-beta.0",
     "@ngrx/effects": "^6.1.0",

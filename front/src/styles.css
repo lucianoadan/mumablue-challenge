@@ -1,2 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~bootstrap/dist/css/bootstrap.min.css';
+@import 'assets/css/bootstrap.css';
+@import 'assets/css/font-awesome.css';
+@import 'assets/css/mdb.css';
+@import 'assets/css/bootstrap-float-label.min.css';
+@import 'assets/css/app.css';
