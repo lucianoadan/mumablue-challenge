@@ -19,6 +19,9 @@ export class ShipmentListItemComponent {
   get statuses() {
     return this.shipment.statuses;
   }
+  get trackingNum() {
+    return this.shipment.trackingNum;
+  }
   get lastStatus() {
     if (this.shipment.statuses.length == 0)
       return null;
