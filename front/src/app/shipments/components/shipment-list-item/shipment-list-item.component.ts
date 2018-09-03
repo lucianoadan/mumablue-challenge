@@ -23,9 +23,8 @@ export class ShipmentListItemComponent {
     if (this.shipment.statuses.length == 0)
       return null;
 
-    let last = this.shipment.statuses.length - 1;
-
-    return this.shipment.statuses[last];
+    // Order First is the most recent
+    return this.shipment.statuses[0];
   }
   open() {
     this.opened = true;
