@@ -3,9 +3,22 @@ body {
     background:#eef5f9;
     color:#607188;
 }
+.form-control{
+    border-width: 2px;
+    outline: 0 none !important;
+}
+.form-control:focus{
+    outline: 0 none!important;
+    box-shadow:none!important;
+}
 
-.blue-gradient{
-    background: -webkit-linear-gradient(50deg,#45cafc,#303f9f)!important;
-    background: -o-linear-gradient(50deg,#45cafc,#303f9f)!important;
-    background: linear-gradient(40deg,#45cafc,#303f9f)!important;
+.form-control.ng-invalid.ng-dirty{
+    border-color:#ff80ab;
+}
+.form-group.ng-invalid.ng-dirty ul{
+    display: block;
+    color:#ff80ab;
+}
+.ng-valid.ng-dirty{
+    border-color: #80cbc4;
 }

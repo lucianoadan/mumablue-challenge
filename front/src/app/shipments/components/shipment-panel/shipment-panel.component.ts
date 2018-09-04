@@ -3,6 +3,8 @@ import { Shipment } from '../../models/shipment';
 import { ShipmentService, StatusAndGroups } from '../../services/shipment.service';
 import { Status } from '../../models/status';
 import { StatusGroup } from '../../models/status-group';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ShipmentFormComponent } from '../shipment-form';
 
 
 
@@ -19,8 +21,10 @@ export class ShipmentPanelComponent {
   // filters
   selectedGroup: StatusGroup = null;
   selectedStatus: Status = null;
+  // modal
+  shipmentFormModal: NgbModalRef;
 
-  constructor(private shipmentService: ShipmentService) {
+  constructor(private shipmentService: ShipmentService, private modalService: NgbModal) {
     this.shipmentService.all().subscribe((shipments: Shipment[]) => {
       this.shipments = shipments;
       this.shipment = shipments[0];
@@ -34,6 +38,14 @@ export class ShipmentPanelComponent {
           this.selectedGroup = res.groups[i];
       }
     });
+    
+  }
+
+
+
+  open() {
+    this.shipmentFormModal = this.modalService.open(ShipmentFormComponent, { size: 'lg', keyboard:false });
+    this.shipmentFormModal.componentInstance.modal = this.shipmentFormModal;
   }
 
   public selectStatus(status: Status) {
