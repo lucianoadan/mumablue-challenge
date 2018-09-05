@@ -19,6 +19,16 @@ class ShipmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Shipment::class);
     }
 
+    public function existsOrderShipment($orderRef)  : bool {
+        
+        return intval($this->createQueryBuilder('s')
+            ->select('count(s.id)')
+            ->andWhere('s.orderRef = :orderRef')
+            ->setParameter('orderRef', $orderRef)
+            ->getQuery()
+            ->getSingleScalarResult()) > 0;
+    }
+
     public function create(Shipment $shipment){
         $this->getEntityManager()->persist($shipment->getShipToAddr());
         $this->getEntityManager()->persist($shipment);

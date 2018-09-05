@@ -56,9 +56,12 @@ class Shipment
      */
     private $createdAt;
 
+    private $statuses;
+    
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->statuses = [];
     }
 
     public function getId(): ?int
@@ -152,4 +155,24 @@ class Shipment
         return $shipment;
     }
 
+
+    /**
+     * Get the value of statuses
+     */ 
+    public function getStatuses()
+    {
+        return $this->statuses;
+    }
+
+    /**
+     * Set the value of statuses
+     *
+     * @return  self
+     */ 
+    public function setStatuses($statuses)
+    {
+        $this->statuses = $statuses;
+
+        return $this;
+    }
 }

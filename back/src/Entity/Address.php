@@ -54,7 +54,8 @@ class Address
     private $zip;
 
     /**
-     * @ORM\Column(type="string", length=2)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Country")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $country;
 
@@ -143,12 +144,12 @@ class Address
         return $this;
     }
 
-    public function getCountry(): ?string
+    public function getCountry(): ?Country
     {
         return $this->country;
     }
 
-    public function setCountry(string $country): self
+    public function setCountry(?Country $country): self
     {
         $this->country = $country;
 
@@ -221,6 +222,7 @@ class Address
     public static function fill($data): ?Address
     {
         $address = new Address();
+
         $address->setAddress($data['address']);
         if (isset($data['address2'])) {
             $address->setAddress2($data['address2']);
@@ -229,15 +231,14 @@ class Address
             $address->setCompanyName($data['companyName']);
         }
 
-        ;
-        $address->setCity($data['city']);
-        $address->setZip($data['zip']);
-        $address->setState($data['state']);
-        $address->setCountry($data['country']);
-        $address->setFirstname($data['firstname']);
-        $address->setLastname($data['lastname']);
-        $address->setPhone($data['phone']);
-        $address->setEmail($data['email']);
+        $address->setCity($data['city'])
+            ->setZip($data['zip'])
+            ->setState($data['state'])
+            ->setCountry($data['country'])
+            ->setFirstname($data['firstname'])
+            ->setLastname($data['lastname'])
+            ->setPhone($data['phone'])
+            ->setEmail($data['email']);
 
         return $address;
     }

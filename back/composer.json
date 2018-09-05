@@ -9,6 +9,7 @@
         "gabrielbull/ups-api": "^0.8.0",
         "guzzlehttp/guzzle": "^6.3",
         "jms/serializer": "^1.13",
+        "nelmio/cors-bundle": "^1.5",
         "pmill/doctrine-array-hydrator": "^0.1.5",
         "rakit/validation": "^0.18.1",
         "symfony/console": "*",

@@ -2,11 +2,9 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Shipment;
-use App\Form\ShipmentType;use App\Service\ShipmentServiceInterface;
+use App\Service\ShipmentServiceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ShipmentController extends ApiController
 {
@@ -20,5 +18,27 @@ class ShipmentController extends ApiController
     {
         return $shipmentService->createShipment($request);
     }
+    
+    /**
+     * Get list of shipments
+     * @Rest\Get("/shipments")
+     * @param Request $request
+     */
+    public function getShipments(Request $request, ShipmentServiceInterface $shipmentService)
+    {
+        return $shipmentService->getShipments($request);
+    }
+
+    /**
+     * Get list of available countries for shipping
+     * @Rest\Get("/countries/available")
+     * @param Request $request
+     */
+    public function getShippingCountries(Request $request, ShipmentServiceInterface $shipmentService)
+    {
+        return $shipmentService->getShippingCountries($request);
+    }
+
+    
 
 }
