@@ -23,7 +23,7 @@
   font-size: 14px;
 }
 .shipment-filter-list li{
-  padding: 10px 25px;
+  padding: 6px 25px;
   color: #688696;
   cursor: pointer;
 }
@@ -37,7 +37,6 @@
   font-weight: bold;
   background:rgba(0,0,0,.05)!important;
   cursor: default!important;
-  background: none!important;
 
 }
 
@@ -52,7 +51,7 @@ CONTENT
 **/
 .shipment-panel .content{
   margin-left: 280px;
-  padding: 30px;
+  padding: 30px 40px;
 }
 
 
@@ -62,7 +61,7 @@ CONTENT
   }
   .shipment-panel .content{
     margin-left: 230px;
-    padding: 20px;
+    padding: 30px;
   }
 }
 
