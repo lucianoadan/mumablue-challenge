@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { Shipment } from '../../models/shipment';
 import { Validators, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ShipmentService } from '../../services/shipment.service';
@@ -17,8 +17,9 @@ export class ShipmentFormComponent implements AfterViewInit {
 
 
   @Input() modal: NgbModalRef;
-  availableCountries: Country[] = [];
-  countryOptions: FormSelectOption[];
+  @Input() availableCountries: Country[] = [];
+  @Input() countryOptions: FormSelectOption[];
+  @Output() onSuccess: EventEmitter<Shipment> = new EventEmitter<Shipment>();
   form: FormGroup;
   showVat: boolean = false;
   loading: boolean = false;
@@ -27,16 +28,7 @@ export class ShipmentFormComponent implements AfterViewInit {
 
 
   public constructor(private shipmentService: ShipmentService, private toastrService: ToastrService, private fb: FormBuilder) {
-    this.shipmentService.availableCountries().subscribe((countries: Country[]) => {
-      this.availableCountries = countries;
-      this.countryOptions = countries.map((a) => {
-        return { value: a.id, label: a.name };
-      });
-
-    });
     this.buildForm(fb);
-
-
   }
 
   ngAfterViewInit(): void {
@@ -84,6 +76,7 @@ export class ShipmentFormComponent implements AfterViewInit {
     this.loading = true;
     this.shipmentService.create(this.form.value).subscribe((shipment: Shipment) => {
       this.toastrService.success('Solicitud de envío creada satisfactoriamente.');
+      this.onSuccess.emit(shipment);
       setTimeout(() => {
         this.modal.close();
         this.loading = false;

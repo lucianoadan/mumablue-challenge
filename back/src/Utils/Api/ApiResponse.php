@@ -2,10 +2,10 @@
 
 namespace App\Utils\Api;
 
+use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
-
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 class ApiResponse
 {
     private $serializer;
@@ -15,9 +15,12 @@ class ApiResponse
     private $headers = [];
     private $httpStatus = Response::HTTP_OK;
 
-    public function __construct(SerializerInterface $serializer)
+    public function __construct()
     {
-        $this->serializer = $serializer;
+        $sb = SerializerBuilder::create();
+        $sb->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
+        $this->serializer = $sb->build();
+
     }
 
     public function getJsonResponse(): JsonResponse

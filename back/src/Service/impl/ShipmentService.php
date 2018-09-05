@@ -5,6 +5,8 @@ namespace App\Service\impl;
 use App\Entity\Shipment;
 use App\Repository\CountryRepository;
 use App\Repository\ShipmentRepository;
+use App\Repository\StatusGroupRepository;
+use App\Repository\StatusRepository;
 use App\Service\CarrierServiceInterface;
 use App\Service\ShipmentServiceInterface;
 use App\Utils\Api\ApiResponse;
@@ -13,25 +15,27 @@ use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ShipmentService implements ShipmentServiceInterface
 {
 
     private $shipmentRepository;
     private $carrierService;
-    private $serializer;
+    private $countryRepository;
+    private $statusRepository;
 
     public function __construct(
         ShipmentRepository $shipmentRepository,
+        StatusRepository $statusRepository,
         CountryRepository $countryRepository,
-        CarrierServiceInterface $carrierService,
-        SerializerInterface $serializer) {
+        StatusGroupRepository $statusGroupRepository,
+        CarrierServiceInterface $carrierService) {
 
         $this->shipmentRepository = $shipmentRepository;
+        $this->statusRepository = $statusRepository;
+        $this->statusGroupRepository = $statusGroupRepository;
         $this->countryRepository = $countryRepository;
         $this->carrierService = $carrierService;
-        $this->serializer = $serializer;
     }
     /**
      * Create a shipment and send it to the carrier service to order a pick up and deliver
@@ -39,7 +43,7 @@ class ShipmentService implements ShipmentServiceInterface
     public function createShipment(Request $request): JsonResponse
     {
 
-        $response = new ApiResponse($this->serializer);
+        $response = new ApiResponse();
         $validator = new ShipmentRequestValidator($this->countryRepository, $this->shipmentRepository);
 
         $data = $request->request->all();
@@ -87,10 +91,17 @@ class ShipmentService implements ShipmentServiceInterface
     /**
      * List of shipments
      */
-    public function getShipments(Request $request){
-        $response = new ApiResponse($this->serializer);
-
-        $shipments = $this->shipmentRepository->findAll();
+    public function getShipments(Request $request)
+    {
+        $response = new ApiResponse();
+        $data = $request->request->all();
+        if (isset($data['status'])) {
+            $shipments = $this->shipmentRepository->findWhereLastStatus($data['status']['id']);
+        } else if (isset($data['statusGroup'])) {
+            $shipments = $this->shipmentRepository->findWhereLastStatusInGroup($data['statusGroup']['id']);
+        } else {
+            $shipments = $this->shipmentRepository->findAll();
+        }
         $response->setPayload($shipments);
 
         return $response->getJsonResponse();
@@ -101,10 +112,39 @@ class ShipmentService implements ShipmentServiceInterface
     public function getShippingCountries(Request $request)
     {
 
-        $response = new ApiResponse($this->serializer);
+        $response = new ApiResponse();
         try {
             $countries = $this->countryRepository->findShippingCountries();
             $response->setPayload($countries);
+        } catch (Exception $ex) {
+            $response->setHttpStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setMessageWithError('Unexpected error. Consult log for details.');
+
+        }
+
+        return $response->getJsonResponse();
+    }
+
+    public function getActualStatuses(Request $request)
+    {
+        $response = new ApiResponse();
+        try {
+            $statuses = $this->statusRepository->getActualStatuses();
+            $response->setPayload($statuses);
+        } catch (Exception $ex) {
+            $response->setHttpStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setMessageWithError('Unexpected error. Consult log for details.');
+        }
+        return $response->getJsonResponse();
+    }
+
+    public function getStatusGroups(Request $request)
+    {
+        $response = new ApiResponse();
+
+        try {
+            $groups = $this->statusGroupRepository->findAll();
+            $response->setPayload($groups);
         } catch (Exception $ex) {
             $response->setHttpStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->setMessageWithError('Unexpected error. Consult log for details.');

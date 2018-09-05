@@ -1,12 +1,12 @@
 <div [ngClass]="opened ? 'opened' : 'closed'" class="card shipment-list-item">
-    <div class="card-header white" (click)="toggle()">
+    <div class="card-header no-select white" (click)="toggle()" >
         <div class="clearfix shipment-cols">
             <div class="order-ref">
                 <strong>{{ orderRef }}</strong>
             </div>
             <div class="last-status">
-                <span [ngClass]="lastStatus.tags.indexOf('alert') > -1 ? 'text-danger' : 'text-cyan'" *ngIf="lastStatus" class="shipment-status">
-                    {{ lastStatus && lastStatus.title }}
+                <span *ngIf="lastStatus" class="shipment-status">
+                    {{ lastStatus?.status.name }}
                 </span>
             </div>
             <div class="last-update">
@@ -33,11 +33,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let s of statuses" [ngClass]="s.tags.indexOf('alert') > -1 ? 'text-danger' : ''">
-                            <td>{{ s.code }}</td>
-                            <td>{{ s.title }}</td>
-                            <td>{{ s.updatedAt | date: 'dd/MM/yyyy'}}</td>
-                            <td>{{ s.updatedAt | date: 'HH:mm'}}</td>
+                        <tr *ngFor="let s of statuses">
+                            <td>{{ s.status.code }}</td>
+                            <td>{{ s.status.name }}</td>
+                            <td colspan="2">wait</td>
+                            <!--<td>{{ s.createdAt | date: 'dd/MM/yyyy'}}</td>-->
+                            <!--<td>{{ s.createdAt | date: 'HH:mm'}}</td>-->
                         </tr>
                     </tbody>
                 </table>

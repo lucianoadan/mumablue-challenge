@@ -35,6 +35,7 @@
   
   color:#ec407a;
   font-weight: bold;
+  background:rgba(0,0,0,.05)!important;
   cursor: default!important;
   background: none!important;
 

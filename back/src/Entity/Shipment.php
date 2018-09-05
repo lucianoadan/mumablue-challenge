@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\{ArrayCollection, Collection};
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use \Datetime;
@@ -56,12 +56,15 @@ class Shipment
      */
     private $createdAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\StatusUpdate", mappedBy="shipment", orphanRemoval=true)
+     */
     private $statuses;
-    
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->statuses = [];
+        $this->statuses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,9 +125,11 @@ class Shipment
         return $this;
     }
 
-    public function getLabelUrl(){
-        if($this->labelPath !== null)
-            return getenv('APP_BASEURL').'/'.$this->labelPath;
+    public function getLabelUrl()
+    {
+        if ($this->labelPath !== null) {
+            return getenv('APP_BASEURL') . '/' . $this->labelPath;
+        }
 
         return null;
     }
@@ -155,24 +160,35 @@ class Shipment
         return $shipment;
     }
 
-
     /**
-     * Get the value of statuses
-     */ 
-    public function getStatuses()
+     * @return Collection|StatusUpdate[]
+     */
+    public function getStatuses(): Collection
     {
         return $this->statuses;
     }
 
-    /**
-     * Set the value of statuses
-     *
-     * @return  self
-     */ 
-    public function setStatuses($statuses)
+    public function addStatus(StatusUpdate $status): self
     {
-        $this->statuses = $statuses;
+        if (!$this->statuses->contains($status)) {
+            $this->statuses[] = $status;
+            $status->setShipment($this);
+        }
 
         return $this;
     }
+
+    public function removeStatus(StatusUpdate $status): self
+    {
+        if ($this->statuses->contains($status)) {
+            $this->statuses->removeElement($status);
+            // set the owning side to null (unless already changed)
+            if ($status->getShipment() === $this) {
+                $status->setShipment(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

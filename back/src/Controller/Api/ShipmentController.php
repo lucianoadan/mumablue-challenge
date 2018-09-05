@@ -3,25 +3,24 @@
 namespace App\Controller\Api;
 
 use App\Service\ShipmentServiceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest;use Symfony\Component\HttpFoundation\Request;
 
 class ShipmentController extends ApiController
 {
     /**
      * Creates an Shipment resource
-     * @Rest\Post("/shipments")
+     * @Rest\Put("/shipments")
      * @param Request $request
      * @return ShipmentServiceInterface $shipmentService Business logic abstraction
      */
-    public function postShipment(Request $request, ShipmentServiceInterface $shipmentService)
+    public function createShipment(Request $request, ShipmentServiceInterface $shipmentService)
     {
         return $shipmentService->createShipment($request);
     }
-    
+
     /**
      * Get list of shipments
-     * @Rest\Get("/shipments")
+     * @Rest\Post("/shipments")
      * @param Request $request
      */
     public function getShipments(Request $request, ShipmentServiceInterface $shipmentService)
@@ -37,6 +36,26 @@ class ShipmentController extends ApiController
     public function getShippingCountries(Request $request, ShipmentServiceInterface $shipmentService)
     {
         return $shipmentService->getShippingCountries($request);
+    }
+
+    /**
+     * Get list of actual last statuses of shipments
+     * @Rest\Get("/status/actual")
+     * @param Request $request
+     */
+    public function getActualStatuses(Request $request, ShipmentServiceInterface $shipmentService)
+    {
+        return $shipmentService->getActualStatuses($request);
+    }
+
+    /**
+     * Get list of status groups
+     * @Rest\Get("/status-group")
+     * @param Request $request
+     */
+    public function getStatusGroups(Request $request, ShipmentServiceInterface $shipmentService)
+    {
+        return $shipmentService->getStatusGroups($request);
     }
 
     

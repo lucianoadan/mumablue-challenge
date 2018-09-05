@@ -8,12 +8,13 @@
         <ul class="shipment-filter-list">
             <li (click)="selectGroup(g)" [ngClass]="selectedGroup == g ? 'active' : ''" *ngFor="let g of statusGroups">
                 <span><i class="fas {{g.icon}}"></i></span>
-                {{g.title }}
+                {{g.name }}
             </li>
         </ul>
         <hr/>
         <ul class="shipment-filter-list">
-                <li (click)="selectStatus(s)" [ngClass]="selectedStatus == s ? 'active' : ''" *ngFor="let s of statuses">{{ s.title }}</li>
+            <li (click)="selectStatus(s)" [ngClass]="selectedStatus == s ? 'active' : ''" *ngFor="let s of statuses">{{ s.name
+                }}</li>
         </ul>
     </div>
 

@@ -19,50 +19,80 @@ class ShipmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Shipment::class);
     }
 
-    public function existsOrderShipment($orderRef)  : bool {
-        
+    public function existsOrderShipment($orderRef): bool
+    {
+
         return intval($this->createQueryBuilder('s')
-            ->select('count(s.id)')
-            ->andWhere('s.orderRef = :orderRef')
-            ->setParameter('orderRef', $orderRef)
-            ->getQuery()
-            ->getSingleScalarResult()) > 0;
+                ->select('count(s.id)')
+                ->andWhere('s.orderRef = :orderRef')
+                ->setParameter('orderRef', $orderRef)
+                ->getQuery()
+                ->getSingleScalarResult()) > 0;
     }
 
-    public function create(Shipment $shipment){
+    public function findWhereLastStatusInGroup($groupId)
+    {
+        return $this->createQueryBuilder('sh')
+            ->distinct()
+            ->from('\App\Entity\StatusUpdate', 'su')
+            ->from('\App\Entity\Status', 's')
+            ->where('su.shipment = sh.id')
+            ->andWhere('s.id = su.status')
+            ->andWhere('su.createdAt = (SELECT MAX(su2.createdAt) FROM \App\Entity\StatusUpdate su2 WHERE su.shipment = su2.shipment )')
+            ->andWhere('s.statusGroup = ' . $groupId)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function findWhereLastStatus($statusId)
+    {
+
+        return $this->createQueryBuilder('sh')
+            ->distinct()
+            ->from('\App\Entity\StatusUpdate', 'su')
+            ->where('su.shipment = sh.id')
+            ->andWhere('su.createdAt = (SELECT MAX(su2.createdAt) FROM \App\Entity\StatusUpdate su2 WHERE su.shipment = su2.shipment )')
+            ->andWhere('su.status = ' . $statusId)
+            ->getQuery()
+            ->execute();
+
+    }
+
+    public function create(Shipment $shipment)
+    {
         $this->getEntityManager()->persist($shipment->getShipToAddr());
         $this->getEntityManager()->persist($shipment);
         $this->getEntityManager()->flush();
 
         return $this;
     }
-    
+
 //    /**
-//     * @return Shipment[] Returns an array of Shipment objects
-//     */
+    //     * @return Shipment[] Returns an array of Shipment objects
+    //     */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->shipmentBy('o.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    return $this->createQueryBuilder('o')
+    ->andWhere('o.exampleField = :val')
+    ->setParameter('val', $value)
+    ->shipmentBy('o.id', 'ASC')
+    ->setMaxResults(10)
+    ->getQuery()
+    ->getResult()
+    ;
     }
-    */
+     */
 
     /*
-    public function findOneBySomeField($value): ?Shipment
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+public function findOneBySomeField($value): ?Shipment
+{
+return $this->createQueryBuilder('o')
+->andWhere('o.exampleField = :val')
+->setParameter('val', $value)
+->getQuery()
+->getOneOrNullResult()
+;
+}
+ */
 }

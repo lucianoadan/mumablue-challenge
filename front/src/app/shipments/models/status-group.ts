@@ -1,5 +1,7 @@
 export interface StatusGroup {
+    id: number;
     code: string;
-    title: string;
+    name: string;
     icon: string;
+    color: string;
 }

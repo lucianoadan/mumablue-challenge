@@ -7,12 +7,11 @@ import { map, catchError } from 'rxjs/operators';
 import { Observable, ObservableInput, throwError } from 'rxjs';
 import { Subscriber } from 'rxjs/Subscriber';
 
-import { Shipment, genMockShipmentList } from '../models/shipment';
+import { Shipment } from '../models/shipment';
 import { ApiResponse } from '@app/core/models/api-response';
 import { AppConfig } from '@app/core/cfg/app.config';
 import { Country } from '../models/country';
 import { Status } from '../models/status';
-import { STATUSES, STATUS_GROUPS } from './mocks/statuses';
 import { StatusGroup } from '../models/status-group';
 
 @Injectable()
@@ -20,15 +19,15 @@ export class ShipmentService {
 
     private API_BASE_URL = AppConfig.API_BASE_URL;
 
-    constructor(private http: HttpClient) {
-    }
+    constructor(private http: HttpClient) { }
 
     /**
      * Get all shipments
      */
-    all(): Observable<Shipment[]> {
+    getShipments(filter = {}): Observable<Shipment[]> {
+
         return this.http
-            .get<ApiResponse<Shipment[]>>(this.API_BASE_URL + '/shipments')
+            .post<ApiResponse<Shipment[]>>(this.API_BASE_URL + '/shipments', filter)
             .pipe(
                 map(response => response.payload || null),
                 catchError(this.handleError.bind(this))
@@ -45,16 +44,31 @@ export class ShipmentService {
                 catchError(this.handleError.bind(this))
             );
     }
+
     /**
-     * Get list of all statuses which is the last status of any shipment
-     * And a list of statuses groups
+     * Available countries for shipment
      */
-    statuses(): Observable<StatusAndGroups> {
-        return Observable.create((observer: Subscriber<any>) => {
-            observer.next({ statuses: STATUSES, groups: STATUS_GROUPS });
-            observer.complete();
-        });
+    getActualStatuses(): Observable<Status[]> {
+        return this.http
+            .get<ApiResponse<Status[]>>(this.API_BASE_URL + '/status/actual')
+            .pipe(
+                map(response => response.payload || null),
+                catchError(this.handleError.bind(this))
+            );
     }
+
+    /**
+     * Available countries for shipment
+     */
+    getStatusGroups(): Observable<StatusGroup[]> {
+        return this.http
+            .get<ApiResponse<StatusGroup[]>>(this.API_BASE_URL + '/status-group')
+            .pipe(
+                map(response => response.payload || null),
+                catchError(this.handleError.bind(this))
+            );
+    }
+
     /**
      * Create a shipment. 
      * Getting as answer the shipment itself with the tracking number and label
@@ -62,7 +76,7 @@ export class ShipmentService {
      */
     create(shipment: Shipment): Observable<Shipment> {
         return this.http
-            .post<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments', shipment)
+            .put<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments', shipment)
             .pipe(
                 map(response => response.payload || null),
                 catchError(this.handleError.bind(this))
@@ -88,9 +102,4 @@ export class ShipmentService {
 
         return throwError({ message: "Error desconocido." });
     }
-}
-/* Requests */
-export interface StatusAndGroups {
-    statuses: Status[],
-    groups: StatusGroup[]
 }
