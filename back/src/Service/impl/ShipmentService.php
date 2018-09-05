@@ -106,6 +106,20 @@ class ShipmentService implements ShipmentServiceInterface
 
         return $response->getJsonResponse();
     }
+
+    /**
+     * List of shipments
+     */
+    public function getShipmentsWithAlert(Request $request)
+    {
+        $response = new ApiResponse();
+        $group = $this->statusGroupRepository->findByCode('alert');
+        $shipments = $this->shipmentRepository->findWhereLastStatusInGroup($group->getId());
+        $response->setPayload($shipments);
+
+        return $response->getJsonResponse();
+    }
+
     /**
      * List of countries available for shipping
      */

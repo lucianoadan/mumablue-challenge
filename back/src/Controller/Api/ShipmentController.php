@@ -27,6 +27,17 @@ class ShipmentController extends ApiController
     {
         return $shipmentService->getShipments($request);
     }
+    /**
+     * Get list of shipments with alerts
+     * @Rest\Get("/alerts")
+     * @param Request $request
+     */
+    public function getAlerts(Request $request, ShipmentServiceInterface $shipmentService)
+    {
+        
+        return $shipmentService->getShipmentsWithAlert($request);
+    }
+    
 
     /**
      * Get list of available countries for shipping
