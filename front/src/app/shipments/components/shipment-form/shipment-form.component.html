@@ -9,22 +9,29 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" #myForm="ngForm" novalidate>
         <div class="row">
             <div class="col-md-6">
-                <app-form-field [fg]="form" name="orderRef" label="Order reference"></app-form-field>
+                <app-form-field [fg]="form" name="orderRef" label="Referencia pedido"></app-form-field>
             </div>
         </div>
         <hr>
         <h4 class="mb-3">Datos personales</h4>
         <div class="row">
             <div class="col-md-6">
-                <app-form-field #firstnameInput [fg]="form" name="firstname" label="Nombre"></app-form-field>
+                <app-form-field #firstnameInput [fg]="form.controls.shipToAddr" name="firstname" label="Nombre"></app-form-field>
             </div>
 
             <div class="col-md-6">
-                <app-form-field [fg]="form" name="lastname" label="Apellidos"></app-form-field>
+                <app-form-field [fg]="form.controls.shipToAddr" name="lastname" label="Apellidos"></app-form-field>
             </div>
         </div>
 
-        <app-form-field [fg]="form" name="email" label="Email"></app-form-field>
+        <div class="row">
+            <div class="col-md-8">
+                <app-form-field [fg]="form.controls.shipToAddr" name="email" label="Email"></app-form-field>
+            </div>
+            <div class="col-md-4">
+                <app-form-field [fg]="form.controls.shipToAddr" name="phone" label="Télefono"></app-form-field>
+            </div>
+        </div>
         <hr>
         <h4 class="mb-3">Dirección entrega</h4>
         <app-form-field [fg]="form.controls.shipToAddr" name="address" label="Dirección"></app-form-field>
@@ -53,20 +60,12 @@
                 <app-form-field [fg]="form.controls.shipToAddr" name="companyName" label="Empresa"></app-form-field>
             </div>
             <div class="col-md-4">
-                <app-form-field *ngIf="showVat" [fg]="form.controls.shipToAddr" name="vat" label="DNI"></app-form-field>
+                <app-form-field *ngIf="showVat" [fg]="form.controls.shipToAddr" name="vat" label="NIF/NIE"></app-form-field>
             </div>
         </div>
 
-
-        <div class="row">
-            <div class="col-md-8">
-                <app-form-field [fg]="form.controls.shipToAddr" name="email" label="Email"></app-form-field>
-            </div>
-            <div class="col-md-4">
-                <app-form-field [fg]="form.controls.shipToAddr" name="phone" label="Télefono"></app-form-field>
-            </div>
-        </div>
         <app-form-field [fg]="form" type="textarea" name="deliveryInstructions" label="Instrucciones para el repartidor"></app-form-field>
+        
         <div class="text-right">
 
             <button (click)="modal.dismiss('Cross click')" type="button" class="btn btn-link">Cancelar</button>

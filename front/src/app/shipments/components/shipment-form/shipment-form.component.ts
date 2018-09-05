@@ -22,6 +22,7 @@ export class ShipmentFormComponent implements AfterViewInit {
   form: FormGroup;
   showVat: boolean = false;
   loading: boolean = false;
+  formErrors = null;
   @ViewChild('firstnameInput') firstnameInputRef;
 
 
@@ -29,13 +30,13 @@ export class ShipmentFormComponent implements AfterViewInit {
     this.shipmentService.availableCountries().subscribe((countries: Country[]) => {
       this.availableCountries = countries;
       this.countryOptions = countries.map((a) => {
-        return { value: a.code, label: a.name };
+        return { value: a.id, label: a.name };
       });
 
     });
     this.buildForm(fb);
 
-    this.onSubmit();
+
   }
 
   ngAfterViewInit(): void {
@@ -46,15 +47,14 @@ export class ShipmentFormComponent implements AfterViewInit {
     // FORM
     this.form = fb.group({
       orderRef: new FormControl('', Validators.required),
-      firstname: new FormControl('', Validators.required),
-      lastname: new FormControl('', Validators.required),
-      email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       deliveryInstructions: new FormControl(''),
       shipToAddr: new FormGroup({
-        phone: new FormControl('', Validators.required),
+        firstname: new FormControl('', Validators.required),
+        lastname: new FormControl('', Validators.required),
         email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+        phone: new FormControl('', Validators.required),
         companyName: new FormControl('', Validators.required),
-        vat: new FormControl(''),
+        vat: new FormControl(null),
         address: new FormControl('', Validators.required),
         address2: new FormControl(''),
         city: new FormControl('', Validators.required),
@@ -66,36 +66,33 @@ export class ShipmentFormComponent implements AfterViewInit {
     });
 
   }
-  public onChangeCountry($event) {
-    const countryCode = $event.target.value;
-    const country = this.availableCountries.find((value) => {
-      return value.code == countryCode;
-    });
+  public onChangeCountry(countryCode) {
+    let country = this.availableCountries.find((check) => check.id == countryCode);
     this.enableVatField(country.invoice);
-
   }
   private enableVatField(enable) {
     this.showVat = enable;
-    if (enable) {
-      this.form.get('shipToAddr').get('vat').enable();
-    }
-    else {
-      this.form.get('shipToAddr').get('vat').disable();
-    }
+    if (!enable)
+      this.form.get('shipToAddr').get('vat').setValue('');
+
   }
 
   public onSubmit() {
+    if (!this.form.valid)
+      return;
+
     this.loading = true;
     this.shipmentService.create(this.form.value).subscribe((shipment: Shipment) => {
+      this.toastrService.success('Solicitud de envío creada satisfactoriamente.');
       setTimeout(() => {
         this.modal.close();
         this.loading = false;
-
-      }, 1500);
+        this.formErrors = null;
+      }, 500);
     }, (error) => {
-      console.log(error);
       // Keep open so you may retry
-      this.toastrService.error(error, 'Error');
+      this.formErrors = error.errors;
+      this.toastrService.error(error.message, 'Error');
       this.loading = false;
     });
   }

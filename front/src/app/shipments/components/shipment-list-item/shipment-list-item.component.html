@@ -1,15 +1,27 @@
 <div [ngClass]="opened ? 'opened' : 'closed'" class="card shipment-list-item">
     <div class="card-header white" (click)="toggle()">
-        <strong>{{ orderRef }}</strong>
+        <div class="clearfix shipment-cols">
+            <div class="order-ref">
+                <strong>{{ orderRef }}</strong>
+            </div>
+            <div class="last-status">
+                <span [ngClass]="lastStatus.tags.indexOf('alert') > -1 ? 'text-danger' : 'text-cyan'" *ngIf="lastStatus" class="shipment-status">
+                    {{ lastStatus && lastStatus.title }}
+                </span>
+            </div>
+            <div class="last-update">
+                <i class="fas fa-caret-down float-right"></i>
+                <i class="fas fa-clock"></i> {{ lastStatus && lastStatus.updatedAt | date: 'dd/MM/yyyy HH:mm'}}
+            </div>
+        </div>
 
-        <span [ngClass]="lastStatus.tags.indexOf('alert') > -1 ? 'text-danger' : 'text-cyan'" *ngIf="lastStatus" class="shipment-status">
-            {{ lastStatus.title }}
-        </span>
+
+
     </div>
     <div class="card-body shipment-details">
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-md-12 col-lg-6">
                 <h5>Status history</h5>
                 <table class="table table-sm table-striped table-hover">
                     <thead>
@@ -30,20 +42,16 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-12 col-lg-6">
                 <h5>Order Details</h5>
                 <ul class="list-unstyled">
-                    <li><strong>Order ref:</strong> {{ orderRef }}</li>
-                    <li><strong>Tracking number:</strong> {{ trackingNum }}</li>
-                </ul>
-                <h5>Customer Details</h5>
-                <ul class="list-unstyled">
-                    <li><strong>Tracking number:</strong> {{ trackingNum }}</li>
+                    <li><strong>Referencia pedido:</strong> {{ orderRef }}</li>
+                    <li><strong>Nº Seguimiento:</strong> {{ trackingNum }}</li>
                 </ul>
             </div>
         </div>
         <div class="text-right">
-            <a class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Cancelar recogida</a>
+            <a class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Cancelar</a>
             <a class="btn  btn-sm btn-default"><i class="fas fa-envelope"></i> Contactar cliente</a>
             <button class="btn  btn-sm btn-default"><i class="fas fa-barcode"></i> Ver etiqueta</button>
         </div>

@@ -27,4 +27,15 @@
     margin-top: 0;
 }
 
-    .shipment-list-item.opened .shipment-details{display: block;}
+.shipment-list-item.opened .shipment-details{display: block;}
+
+.shipment-cols > div{
+    float: left;
+}
+
+.shipment-cols > .order-ref{
+    width: 70px;
+}
+.shipment-cols > .last-update{
+    float: right;
+}

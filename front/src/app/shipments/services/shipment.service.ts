@@ -11,16 +11,14 @@ import { Shipment, genMockShipmentList } from '../models/shipment';
 import { ApiResponse } from '@app/core/models/api-response';
 import { AppConfig } from '@app/core/cfg/app.config';
 import { Country } from '../models/country';
-import { COUNTRIES } from './mocks/countries';
 import { Status } from '../models/status';
 import { STATUSES, STATUS_GROUPS } from './mocks/statuses';
 import { StatusGroup } from '../models/status-group';
-import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ShipmentService {
 
-    private ENDPOINT = AppConfig.API_BASE_URL + '/shipments';
+    private API_BASE_URL = AppConfig.API_BASE_URL;
 
     constructor(private http: HttpClient) {
     }
@@ -29,23 +27,23 @@ export class ShipmentService {
      * Get all shipments
      */
     all(): Observable<Shipment[]> {
-        return Observable.create((observer: Subscriber<any>) => {
-            observer.next(genMockShipmentList());
-            observer.complete();
-        });
-        /*return this.http
-            .get<{ payload: Shipment[] }>(`${this.API_PATH}?q=${queryTitle}`)
-            .pipe(map(response => response.payload || []));
-        */
+        return this.http
+            .get<ApiResponse<Shipment[]>>(this.API_BASE_URL + '/shipments')
+            .pipe(
+                map(response => response.payload || null),
+                catchError(this.handleError.bind(this))
+            );
     }
     /**
      * Available countries for shipment
      */
     availableCountries(): Observable<Country[]> {
-        return Observable.create((observer: Subscriber<any>) => {
-            observer.next(COUNTRIES);
-            observer.complete();
-        });
+        return this.http
+            .get<ApiResponse<Country[]>>(this.API_BASE_URL + '/countries/available')
+            .pipe(
+                map(response => response.payload || null),
+                catchError(this.handleError.bind(this))
+            );
     }
     /**
      * Get list of all statuses which is the last status of any shipment
@@ -64,38 +62,31 @@ export class ShipmentService {
      */
     create(shipment: Shipment): Observable<Shipment> {
         return this.http
-            .post<ApiResponse<Shipment>>(this.ENDPOINT, shipment)
+            .post<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments', shipment)
             .pipe(
                 map(response => response.payload || null),
                 catchError(this.handleError.bind(this))
             );
-
-
-        /*return Observable.create((observer: Subscriber<any>) => {
-            shipment.id = Math.floor((Math.random()+1)*1000);
-            observer.next(shipment);
-            observer.complete();
-        });*/
     }
 
     private handleError(error: any, caught: Observable<any>): ObservableInput<{}> {
-
-        ///return Observable.throw(error || "Server Error");
         if (error instanceof HttpErrorResponse) {
-            // Server or connection error happened
-            if (!navigator.onLine) {
-                throwError('Parece que no tienes conexión.');
+
+            if (!navigator.onLine) { // Server or connection error happened
+                return throwError({ message: 'Parece que no tienes conexión en tu dispositivo.' });
             }
             else if (error.status === 0) {
-                throwError('Servidor no disponible.');
-            } else {
-                throwError(error.message);
+                return throwError({ message: 'Servidor no disponible.' });
+                // Custom server exception
+            } else if (typeof error.error !== "undefined") {
+                return throwError(error.error);
             }
-        } else {
-            throwError('Error en la aplicación.');
+            else {
+                return throwError(error);
+            }
         }
 
-        return throwError("Hubo un error en el servidor.");
+        return throwError({ message: "Error desconocido." });
     }
 }
 /* Requests */
