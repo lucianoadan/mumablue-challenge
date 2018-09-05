@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use \Datetime;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @UniqueEntity("orderRef")
  */
 class Shipment
 {

@@ -19,5 +19,12 @@ class StatusGroupRepository extends ServiceEntityRepository
         parent::__construct($registry, StatusGroup::class);
     }
 
+    public function findByCode($code){
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.code = :code')
+            ->setParameter('code', $code)
+            ->getQuery()
+            ->getSingleResult();
+    }
    
 }
