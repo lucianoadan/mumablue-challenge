@@ -10,8 +10,8 @@ import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
             <input #input (change)="change($event)" [formControlName]="name" type="{{type}}" class="form-control"  />
         </ng-container>
         <ng-container *ngIf="isSelect">
-            <select #input (change)="change($event)" [formControlName]="name" class="form-control"  >
-            <option *ngFor="let opt of values" [value]="opt.value"  > {{ opt.label }}</option>
+            <select (ngModelChange)="change($event)" [formControlName]="name" class="form-control"  >
+            <option *ngFor="let opt of values" [ngValue]="opt.value"  > {{ opt.label }}</option>
             </select>
         </ng-container>
         <ng-container *ngIf="isTextarea">
