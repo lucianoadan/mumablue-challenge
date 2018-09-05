@@ -13,13 +13,14 @@ import { AppConfig } from '@app/core/cfg/app.config';
 import { Country } from '../models/country';
 import { Status } from '../models/status';
 import { StatusGroup } from '../models/status-group';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ShipmentService {
 
     private API_BASE_URL = AppConfig.API_BASE_URL;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private toastrService: ToastrService) { }
 
     /**
      * Get all shipments
@@ -33,6 +34,7 @@ export class ShipmentService {
                 catchError(this.handleError.bind(this))
             );
     }
+
     /**
      * Available countries for shipment
      */
@@ -84,22 +86,27 @@ export class ShipmentService {
     }
 
     private handleError(error: any, caught: Observable<any>): ObservableInput<{}> {
+        let finalError;
         if (error instanceof HttpErrorResponse) {
-
+            
             if (!navigator.onLine) { // Server or connection error happened
-                return throwError({ message: 'Parece que no tienes conexión en tu dispositivo.' });
+                finalError = { message: 'Parece que no tienes conexión en tu dispositivo.' };
             }
             else if (error.status === 0) {
-                return throwError({ message: 'Servidor no disponible.' });
+                finalError = { message: 'Servidor no disponible.' };
                 // Custom server exception
             } else if (typeof error.error !== "undefined") {
-                return throwError(error.error);
+                finalError = error.error;
             }
             else {
-                return throwError(error);
+                finalError = error;
             }
         }
+        else{
+            finalError = { message: "Error desconocido." };
+        }
 
-        return throwError({ message: "Error desconocido." });
+        this.toastrService.error(finalError.message, 'Error');
+        return throwError(finalError);
     }
 }

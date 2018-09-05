@@ -85,7 +85,7 @@ export class ShipmentFormComponent implements AfterViewInit {
     }, (error) => {
       // Keep open so you may retry
       this.formErrors = error.errors;
-      this.toastrService.error(error.message, 'Error');
+      
       this.loading = false;
     });
   }
