@@ -83,7 +83,7 @@ export class ShipmentPanelComponent {
   public selectStatus(status: Status) {
     this.selectedStatus = status;
     this.selectedGroup = null;
-    this.fetchShipments({ status: status});
+    this.fetchShipments({ status_id: status.id});
   }
   public selectGroup(group: StatusGroup) {
     this.selectedStatus = null;
@@ -91,6 +91,6 @@ export class ShipmentPanelComponent {
     if(this.selectedGroup.code == 'all')
       this.fetchShipments();
     else
-      this.fetchShipments({ statusGroup: group});
+      this.fetchShipments({ status_group_id: group.id});
   }
 }
