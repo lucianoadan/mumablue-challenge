@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Shipment } from '../../models/shipment';
+import { ShipmentHeader } from '../../models/shipment-header';
 
 
 @Component({
@@ -8,10 +9,6 @@ import { Shipment } from '../../models/shipment';
   styleUrls: ['./shipment-list.component.css']
 })
 export class ShipmentListComponent {
-  shipment: Shipment = null;
-  @Input() shipments: Shipment[] = [];
+  @Input() shipments: ShipmentHeader[] = [];
 
-  public select(shipment: Shipment) {
-    this.shipment = shipment;
-  }
 }

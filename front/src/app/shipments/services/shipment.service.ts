@@ -14,6 +14,7 @@ import { Country } from '../models/country';
 import { Status } from '../models/status';
 import { StatusGroup } from '../models/status-group';
 import { ToastrService } from 'ngx-toastr';
+import { ShipmentHeader } from '../models/shipment-header';
 
 @Injectable()
 export class ShipmentService {
@@ -23,12 +24,26 @@ export class ShipmentService {
     constructor(private http: HttpClient, private toastrService: ToastrService) { }
 
     /**
-     * Get all shipments
+     * Get all shipments headers
      */
-    getShipments(filter = {}): Observable<Shipment[]> {
-
+    getShipments(params: any = {}): Observable<ShipmentHeader[]> {
+        params.lightweight = 1;
+        let header = { params: params };
         return this.http
-            .post<ApiResponse<Shipment[]>>(this.API_BASE_URL + '/shipments', filter)
+            .get<ApiResponse<ShipmentHeader[]>>(this.API_BASE_URL + '/shipments', header)
+            .pipe(
+                map(response => response.payload || null),
+                catchError(this.handleError.bind(this))
+            );
+    }
+
+    /**
+     * Get all shipments headers
+     */
+    getShipment(id: any = {}): Observable<Shipment> {
+        let header = { params: { id: id } };
+        return this.http
+            .get<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments/'+id)
             .pipe(
                 map(response => response.payload || null),
                 catchError(this.handleError.bind(this))
@@ -88,7 +103,7 @@ export class ShipmentService {
     private handleError(error: any, caught: Observable<any>): ObservableInput<{}> {
         let finalError;
         if (error instanceof HttpErrorResponse) {
-            
+
             if (!navigator.onLine) { // Server or connection error happened
                 finalError = { message: 'Parece que no tienes conexión en tu dispositivo.' };
             }
@@ -102,7 +117,7 @@ export class ShipmentService {
                 finalError = error;
             }
         }
-        else{
+        else {
             finalError = { message: "Error desconocido." };
         }
 

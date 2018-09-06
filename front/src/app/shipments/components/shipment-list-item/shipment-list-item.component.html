@@ -2,23 +2,21 @@
     <div class="card-header no-select white" (click)="toggle()" >
         <div class="clearfix shipment-cols">
             <div class="order-ref">
-                <strong>{{ orderRef }}</strong>
+                <strong>{{ shipmentHdr.orderRef }}</strong>
             </div>
             <div class="last-status">
-                <span *ngIf="lastStatus" class="shipment-status" [ngClass]="lastStatus!=null ? 'text-'+lastStatus.status.statusGroup?.color : ''">
-                    {{ lastStatus?.status.name }}
+                <span class="shipment-status {{lastStatusColor}}">
+                    {{ shipmentHdr.statusName }}
                 </span>
             </div>
             <div class="last-update">
                 <i class="fas fa-caret-down float-right"></i>
-                <i class="fas fa-clock"></i> {{ lastStatus && lastStatus.updatedAt | date: 'dd/MM/yyyy HH:mm'}}
+                <i class="fas fa-clock"></i> {{ shipmentHdr?.createdAt | date: 'dd/MM/yyyy HH:mm'}}
             </div>
         </div>
 
-
-
     </div>
-    <div class="card-body shipment-details">
+    <div class="card-body shipment-details" *ngIf="shipment">
         <div class="row">
 
             <div class="col-md-12 col-lg-6">
@@ -33,7 +31,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let s of statuses" [ngClass]="lastStatus!=null ? 'text-'+lastStatus.status.statusGroup?.color : ''">
+                        <tr *ngFor="let s of shipment.statuses">
                             <td>{{ s.status.code }}</td>
                             <td>{{ s.status.name }}</td>
                             <td>{{ s.createdAt | date: 'dd/MM/yyyy'}}</td>
@@ -45,8 +43,8 @@
             <div class="col-md-12 col-lg-6">
                 <h5>Order Details</h5>
                 <ul class="list-unstyled">
-                    <li><strong>Referencia pedido:</strong> {{ orderRef }}</li>
-                    <li><strong>Nº Seguimiento:</strong> {{ trackingNum }}</li>
+                    <li><strong>Referencia pedido:</strong> {{ shipment.orderRef }}</li>
+                    <li><strong>Nº Seguimiento:</strong> {{ shipment.trackingNum }}</li>
                 </ul>
             </div>
         </div>

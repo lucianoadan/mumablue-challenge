@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Shipment } from '../../models/shipment';
-import { ShipmentService, StatusAndGroups } from '../../services/shipment.service';
+import { ShipmentService } from '../../services/shipment.service';
 import { Status } from '../../models/status';
 import { StatusGroup } from '../../models/status-group';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ShipmentFormComponent } from '../shipment-form';
 import { Country } from '../../models/country';
 import { FormSelectOption } from '../../../core/components/form-field.component';
+import { ShipmentHeader } from '../../models/shipment-header';
 
 
 
@@ -23,8 +24,7 @@ export class ShipmentPanelComponent {
     color: '',
     icon: 'fa-bars',
   };
-  shipment: Shipment = null;
-  shipments: Shipment[] = [];
+  shipments: ShipmentHeader[] = [];
   statuses: Status[] = [];
   statusGroups: StatusGroup[];
   availableCountries: Country[];
@@ -62,9 +62,8 @@ export class ShipmentPanelComponent {
   }
 
   private fetchShipments(filters = {}) {
-    this.shipmentService.getShipments(filters).subscribe((shipments: Shipment[]) => {
+    this.shipmentService.getShipments(filters).subscribe((shipments: ShipmentHeader[]) => {
       this.shipments = shipments;
-      this.shipment = shipments[0];
     });
   }
 
