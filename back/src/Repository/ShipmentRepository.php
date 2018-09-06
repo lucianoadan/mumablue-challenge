@@ -44,6 +44,23 @@ class ShipmentRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findNotDelivered()
+    {
+        return $this->createQueryBuilder('sh')
+            ->distinct()
+            ->from('\App\Entity\StatusUpdate', 'su')
+            ->from('\App\Entity\Status', 's')
+            ->from('\App\Entity\StatusGroup', 'g')
+            ->where('su.shipment = sh.id')
+            ->andWhere('s.id = su.status')
+            ->andWhere('s.statusGroup = g.id')
+            ->andWhere('su.createdAt = (SELECT MAX(su2.createdAt) FROM \App\Entity\StatusUpdate su2 WHERE su.shipment = su2.shipment )')
+            ->andWhere('g.code <> :groupCode')
+            ->setParameter('groupCode', 'delivered')
+            ->getQuery()
+            ->execute();
+    }
+
     public function findWhereLastStatus($statusId)
     {
 
@@ -52,7 +69,8 @@ class ShipmentRepository extends ServiceEntityRepository
             ->from('\App\Entity\StatusUpdate', 'su')
             ->where('su.shipment = sh.id')
             ->andWhere('su.createdAt = (SELECT MAX(su2.createdAt) FROM \App\Entity\StatusUpdate su2 WHERE su.shipment = su2.shipment )')
-            ->andWhere('su.status = ' . $statusId)
+            ->andWhere('su.status = :statusId')
+            ->setParameter('statusId', $statusId)
             ->getQuery()
             ->execute();
 
@@ -61,6 +79,14 @@ class ShipmentRepository extends ServiceEntityRepository
     public function create(Shipment $shipment)
     {
         $this->getEntityManager()->persist($shipment->getShipToAddr());
+        $this->getEntityManager()->persist($shipment);
+        $this->getEntityManager()->flush();
+
+        return $this;
+    }
+
+    public function update(Shipment $shipment)
+    {
         $this->getEntityManager()->persist($shipment);
         $this->getEntityManager()->flush();
 

@@ -20,13 +20,24 @@ class ShipmentController extends ApiController
 
     /**
      * Get list of shipments
-     * @Rest\Post("/shipments")
+     * @Rest\Get("/shipments")
      * @param Request $request
      */
     public function getShipments(Request $request, ShipmentServiceInterface $shipmentService)
     {
         return $shipmentService->getShipments($request);
     }
+
+    /**
+     * Get shipment
+     * @Rest\Get("/shipments/{id}")
+     * @param Request $request
+     */
+    public function getShipment($id, Request $request, ShipmentServiceInterface $shipmentService)
+    {
+        return $shipmentService->getShipment($id, $request);
+    }
+
     /**
      * Get list of shipments with alerts
      * @Rest\Get("/alerts")

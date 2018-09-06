@@ -4,6 +4,7 @@ namespace App\Service\impl;
 
 use App\Entity\Shipment;
 use App\Repository\CountryRepository;
+use App\Repository\ShipmentHeaderRepository;
 use App\Repository\ShipmentRepository;
 use App\Repository\StatusGroupRepository;
 use App\Repository\StatusRepository;
@@ -26,11 +27,14 @@ class ShipmentService implements ShipmentServiceInterface
 
     public function __construct(
         ShipmentRepository $shipmentRepository,
+        ShipmentHeaderRepository $shipmentHdrRepository,
         StatusRepository $statusRepository,
         CountryRepository $countryRepository,
         StatusGroupRepository $statusGroupRepository,
-        CarrierServiceInterface $carrierService) {
+        CarrierServiceInterface $carrierService
+    ) {
 
+        $this->shipmentHdrRepository = $shipmentHdrRepository;
         $this->shipmentRepository = $shipmentRepository;
         $this->statusRepository = $statusRepository;
         $this->statusGroupRepository = $statusGroupRepository;
@@ -94,15 +98,31 @@ class ShipmentService implements ShipmentServiceInterface
     public function getShipments(Request $request)
     {
         $response = new ApiResponse();
-        $data = $request->request->all();
-        if (isset($data['status'])) {
-            $shipments = $this->shipmentRepository->findWhereLastStatus($data['status']['id']);
-        } else if (isset($data['statusGroup'])) {
-            $shipments = $this->shipmentRepository->findWhereLastStatusInGroup($data['statusGroup']['id']);
+        $filters = $request->query->all();
+        $headersOnly = (isset($filters['lightweight']) && $filters['lightweight']);
+        $shipmentRepo = $headersOnly ? $this->shipmentHdrRepository : $this->shipmentRepository;
+
+        if (isset($filters['status_id'])) {
+            $shipments = $shipmentRepo->findWhereLastStatus($filters['status_id']);
+        } else if (isset($filters['status_group_id'])) {
+            $shipments = $shipmentRepo->findWhereLastStatusInGroup($filters['status_group_id']);
         } else {
-            $shipments = $this->shipmentRepository->findAll();
+            $shipments = $shipmentRepo->findAll();
         }
         $response->setPayload($shipments);
+
+        return $response->getJsonResponse();
+    }
+
+    /**
+     * Get shipment
+     */
+    public function getShipment($id, Request $request)
+    {
+        $response = new ApiResponse();
+
+        $shipment = $this->shipmentRepository->find(intval($id));
+        $response->setPayload($shipment);
 
         return $response->getJsonResponse();
     }
@@ -144,6 +164,7 @@ class ShipmentService implements ShipmentServiceInterface
         $response = new ApiResponse();
         try {
             $statuses = $this->statusRepository->getActualStatuses();
+            
             $response->setPayload($statuses);
         } catch (Exception $ex) {
             $response->setHttpStatus(Response::HTTP_INTERNAL_SERVER_ERROR);

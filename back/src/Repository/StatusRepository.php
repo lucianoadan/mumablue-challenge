@@ -27,15 +27,28 @@ class StatusRepository extends ServiceEntityRepository
     }
 
     public function getActualStatuses()
-    {
-
-        return $this->createQueryBuilder('s')
-            ->distinct()
-            ->from('\App\Entity\StatusUpdate', 'su')
-            ->where('su.status = s.id')
-            ->andWhere('su.createdAt = (SELECT MAX(su2.createdAt) FROM \App\Entity\StatusUpdate su2 WHERE su.shipment = su2.shipment )')
+    {   
+        $em = $this->getEntityManager();
+        $cm = $em->getClassMetadata('App:Status');
+        $cm->setTableName('vw_actual_statuses');
+        $statuses = $this->createQueryBuilder('s')
             ->getQuery()
             ->execute();
 
+            $cm->setTableName('status');
+
+        return $statuses;
+        
+            
+
+    }
+
+    public function findByCode($code)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.code = :code')
+            ->setParameter('code', $code)
+            ->getQuery()
+            ->getSingleResult();
     }
 }

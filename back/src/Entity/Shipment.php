@@ -60,7 +60,7 @@ class Shipment
     private $createdAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\StatusUpdate", mappedBy="shipment", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\StatusUpdate", mappedBy="shipment", orphanRemoval=true, cascade={"persist"})
      */
     private $statuses;
 
