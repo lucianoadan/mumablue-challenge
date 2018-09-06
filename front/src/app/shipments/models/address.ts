@@ -1,6 +1,8 @@
 export interface Address {
 
     id: number;
+    firstname: string;
+    lastname:string;
     companyName: string;
     address: string;
     address2: string;

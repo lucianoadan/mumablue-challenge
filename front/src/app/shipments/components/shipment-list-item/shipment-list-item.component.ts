@@ -29,6 +29,11 @@ export class ShipmentListItemComponent {
     // Order First is the most recent
     return this.shipment.statuses[0];
   }
+  get mailToLink () {
+    const subject = "Información sobre pedido "+this.shipment.orderRef;
+    const body = "Estimado "+this.shipment.shipToAddr.firstname+ " "+this.shipment.shipToAddr.lastname+' ,';
+    return "mailto:"+this.shipment.shipToAddr.email+"?subject="+subject+"&body="+body;
+  }
   open() {
     this.opened = true;
   }
