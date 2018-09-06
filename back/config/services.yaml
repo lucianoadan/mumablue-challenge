@@ -51,5 +51,8 @@ services:
     app.shipment_service:
         alias: App\Service\ShipmentServiceInterface
         public: true
+    app.carrier_service:
+        alias: App\Service\CarrierServiceInterface
+        public: true
 
     

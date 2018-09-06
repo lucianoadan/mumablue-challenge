@@ -22,6 +22,12 @@ class UpsCarrierService implements CarrierServiceInterface
         $this->shipperNumber = getenv('UPS_API_SHIPPER');
         $this->testing = true; // Para evitar disgustos no va por configuración!
     }
+    public function getStatus(Shipment $shipmentData){
+
+    }
+    public function updateShipmentsStatus(){
+        
+    }
     public function ship(Shipment $shipmentData)
     {
 
