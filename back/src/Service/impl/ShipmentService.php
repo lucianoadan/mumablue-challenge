@@ -69,7 +69,7 @@ class ShipmentService implements ShipmentServiceInterface
         $shipment = Shipment::fill($data);
 
         try {
-            //$this->carrierService->ship($shipment);
+            $this->carrierService->ship($shipment);
         } catch (Exception $ex) {
             $response->setHttpStatus(Response::HTTP_BAD_REQUEST);
             $response->setMessageWithError('Carrier Error: ' . $ex->getMessage());

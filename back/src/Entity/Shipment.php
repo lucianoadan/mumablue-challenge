@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use \Datetime;
+use JMS\Serializer\Annotation\Accessor;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
@@ -63,10 +64,14 @@ class Shipment
      */
     private $statuses;
 
+    /** @Accessor(getter="getLabelUrl") */
+    private $labelUrl;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->statuses = new ArrayCollection();
+        $this->labelUrl = null;
     }
 
     public function getId(): ?int

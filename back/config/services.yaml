@@ -34,9 +34,10 @@ services:
     App\Service\ShipmentServiceInterface: '@App\Service\impl\ShipmentService'
 
     App\Service\impl\UpsCarrierService: ~
+    App\Service\impl\FakeCarrierService: ~
 
     # Added CarrierInterface to be able to easily change Shipping Provider
-    App\Service\CarrierServiceInterface: '@App\Service\impl\UpsCarrierService'
+    App\Service\CarrierServiceInterface: '@App\Service\impl\FakeCarrierService'
     App\Utils\Ups\UpsConfig: ~
 
    
