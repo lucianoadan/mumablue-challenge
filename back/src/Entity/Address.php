@@ -54,7 +54,7 @@ class Address
     private $zip;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Country")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Country", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $country;

@@ -58,7 +58,7 @@ class ShipmentService implements ShipmentServiceInterface
 
             $response->setErrors($errors);
             // Especial error
-            if ($errors['orderRef']) {
+            if (isset($errors['orderRef'])) {
                 $errorMsg = $errors['orderRef'][0];
             } else {
                 $errorMsg = 'Solicitud incorrecta. Revisa el formulario.';

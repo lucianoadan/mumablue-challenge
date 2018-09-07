@@ -29,7 +29,7 @@ class Status
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\StatusGroup")
+     * @ORM\ManyToOne(targetEntity="App\Entity\StatusGroup", fetch="EAGER")
      */
     private $statusGroup;
 

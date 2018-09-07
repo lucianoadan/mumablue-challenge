@@ -30,6 +30,17 @@ class ShipmentRepository extends ServiceEntityRepository
                 ->getSingleScalarResult()) > 0;
     }
 
+    public function exists($shipmentId): bool
+    {
+
+        return intval($this->createQueryBuilder('s')
+                ->select('count(s.id)')
+                ->andWhere('s.id = :shipmentId')
+                ->setParameter('shipmentId', $shipmentId)
+                ->getQuery()
+                ->getSingleScalarResult()) > 0;
+    }
+
     public function findWhereLastStatusInGroup($groupId)
     {
         return $this->createQueryBuilder('sh')

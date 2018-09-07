@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\{ArrayCollection, Collection};
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Accessor;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use \Datetime;
-use JMS\Serializer\Annotation\Accessor;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
@@ -42,7 +43,7 @@ class Shipment
     private $labelPath;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"}, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
      */
@@ -60,12 +61,13 @@ class Shipment
     private $createdAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\StatusUpdate", mappedBy="shipment", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\StatusUpdate", mappedBy="shipment", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
      */
     private $statuses;
 
     /** @Accessor(getter="getLabelUrl") */
     private $labelUrl;
+
 
     public function __construct()
     {
@@ -197,5 +199,6 @@ class Shipment
 
         return $this;
     }
+
 
 }

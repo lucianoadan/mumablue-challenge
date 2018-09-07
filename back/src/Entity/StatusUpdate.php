@@ -17,7 +17,7 @@ class StatusUpdate
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Status")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Status", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $status;
@@ -28,7 +28,7 @@ class StatusUpdate
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Shipment", inversedBy="statuses")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Shipment", inversedBy="statuses", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $shipment;
