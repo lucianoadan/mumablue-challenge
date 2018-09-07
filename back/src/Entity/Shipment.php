@@ -62,12 +62,22 @@ class Shipment
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\StatusUpdate", mappedBy="shipment", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OrderBy({"created_at" = "DESC"})
      */
     private $statuses;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\QAReview", mappedBy="shipment", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
+     */
+    private $review;
 
     /** @Accessor(getter="getLabelUrl") */
     private $labelUrl;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $estDeliveryDate;
 
     public function __construct()
     {
@@ -200,5 +210,35 @@ class Shipment
         return $this;
     }
 
+    public function getEstDeliveryDate(): ?\DateTimeInterface
+    {
+        return $this->estDeliveryDate;
+    }
 
+    public function setEstDeliveryDate(?\DateTimeInterface $estDeliveryDate): self
+    {
+        $this->estDeliveryDate = $estDeliveryDate;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of review
+     */
+    public function getReview()
+    {
+        return $this->review;
+    }
+
+    /**
+     * Set the value of review
+     *
+     * @return  self
+     */
+    public function setReview($review)
+    {
+        $this->review = $review;
+
+        return $this;
+    }
 }

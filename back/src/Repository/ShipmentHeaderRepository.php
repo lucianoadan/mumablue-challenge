@@ -21,7 +21,8 @@ class ShipmentHeaderRepository extends ServiceEntityRepository
     public function findNotDelivered()
     {
         return $this->createQueryBuilder('sh')
-            ->andWhere('status_group_code <> :groupCode')
+            ->where('sh.statusGroupCode <> :groupCode')
+            ->orWhere('sh.statusGroupCode is NULL ')
             ->setParameter('groupCode', 'delivered')
             ->getQuery()
             ->execute();
@@ -31,17 +32,18 @@ class ShipmentHeaderRepository extends ServiceEntityRepository
     {
 
         return $this->createQueryBuilder('sh')
-            ->andWhere('sh.statusId = :statusId')
+            ->where('sh.statusId = :statusId')
             ->setParameter('statusId', $statusId)
             ->getQuery()
             ->execute();
 
     }
 
+
     public function findWhereLastStatusInGroup($groupId)
     {
         return $this->createQueryBuilder('sh')
-            ->andWhere('sh.statusGroupId = :statusGroupId')
+            ->where('sh.statusGroupId = :statusGroupId')
             ->setParameter('statusGroupId', $groupId)
             ->getQuery()
             ->execute();

@@ -22,12 +22,18 @@ class UpsCarrierService implements CarrierServiceInterface
         $this->shipperNumber = getenv('UPS_API_SHIPPER');
         $this->testing = true; // Para evitar disgustos no va por configuración!
     }
-    public function getStatus(Shipment $shipmentData){
+    public function getStatus(Shipment $shipmentData)
+    {
+        $tracking = new \Ups\Tracking($this->secret, $this->userId, $this->passwd);
+        $shipment = $tracking->track($shipmentData->getTrackingNumber());
+
+        throw new \Exception('Not implemented');
+        foreach ($shipment->Package->Activity as $activity) {
+            /** Take status info */
+        }
 
     }
-    public function updateShipmentsStatus(){
-        
-    }
+
     public function ship(Shipment $shipmentData)
     {
 

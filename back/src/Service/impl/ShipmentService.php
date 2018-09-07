@@ -74,6 +74,7 @@ class ShipmentService implements ShipmentServiceInterface
 
         try {
             $this->carrierService->ship($shipment);
+            $this->carrierService->getStatus($shipment);
         } catch (Exception $ex) {
             $response->setHttpStatus(Response::HTTP_BAD_REQUEST);
             $response->setMessageWithError('Carrier Error: ' . $ex->getMessage());
@@ -95,7 +96,7 @@ class ShipmentService implements ShipmentServiceInterface
     /**
      * List of shipments
      */
-    public function getShipments(Request $request)
+    public function getShipments(Request $request)  : JsonResponse
     {
         $response = new ApiResponse();
         $filters = $request->query->all();
@@ -117,20 +118,32 @@ class ShipmentService implements ShipmentServiceInterface
     /**
      * Get shipment
      */
-    public function getShipment($id, Request $request)
+    public function getShipment($id, Request $request) : JsonResponse
     {
         $response = new ApiResponse();
 
         $shipment = $this->shipmentRepository->find(intval($id));
+        if($shipment == null){
+            $response->setErrors(["Envío no encontrado"]);
+            $response->setMessage("Envío no encontrado");
+            return $response->getJsonResponse();
+        }
+        /*
+         Fetch last available status:
+         Commented because in the FakeCarrierService 
+         a new status is always added to non-delivered shipments
+        $this->carrierService->getStatus($shipment);
+        */
+
         $response->setPayload($shipment);
 
         return $response->getJsonResponse();
     }
 
     /**
-     * List of shipments
+     * List of shipments with alerts
      */
-    public function getShipmentsWithAlert(Request $request)
+    public function getShipmentsWithAlert(Request $request) : JsonResponse
     {
         $response = new ApiResponse();
         $group = $this->statusGroupRepository->findByCode('alert');
@@ -143,7 +156,7 @@ class ShipmentService implements ShipmentServiceInterface
     /**
      * List of countries available for shipping
      */
-    public function getShippingCountries(Request $request)
+    public function getShippingCountries(Request $request) : JsonResponse
     {
 
         $response = new ApiResponse();
@@ -159,12 +172,12 @@ class ShipmentService implements ShipmentServiceInterface
         return $response->getJsonResponse();
     }
 
-    public function getActualStatuses(Request $request)
+    public function getActualStatuses(Request $request) : JsonResponse
     {
         $response = new ApiResponse();
         try {
             $statuses = $this->statusRepository->getActualStatuses();
-            
+
             $response->setPayload($statuses);
         } catch (Exception $ex) {
             $response->setHttpStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -173,7 +186,7 @@ class ShipmentService implements ShipmentServiceInterface
         return $response->getJsonResponse();
     }
 
-    public function getStatusGroups(Request $request)
+    public function getStatusGroups(Request $request) : JsonResponse
     {
         $response = new ApiResponse();
 
@@ -187,6 +200,27 @@ class ShipmentService implements ShipmentServiceInterface
         }
 
         return $response->getJsonResponse();
+    }
+
+    /**
+     * Update the status of all undelivered shipments
+     */
+    public function updateShipmentsStatus()
+    {
+
+        // IDs of not delivered shipments
+        $notDeliveredShipments = $this->shipmentHdrRepository->findNotDelivered();
+        $shipmentIds = array_map(function ($s) {
+            return $s->getId();
+        }, $notDeliveredShipments);
+        // get all shipments by those ids
+        $shipments = $this->shipmentRepository->findBy([
+            'id' => $shipmentIds,
+        ]);
+        foreach ($shipments as $shipment) {
+            $this->carrierService->getStatus($shipment);
+        }
+
     }
 
 }

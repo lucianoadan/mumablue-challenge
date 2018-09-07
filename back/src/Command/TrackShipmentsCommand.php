@@ -1,7 +1,7 @@
 <?php
 namespace App\Command;
 
-use App\Service\CarrierServiceInterface;
+use App\Service\ShipmentServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -9,9 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TrackShipmentsCommand extends Command
 {
     private $carrierService;
-    public function __construct(CarrierServiceInterface $carrierService)
+    public function __construct(ShipmentServiceInterface $shipmentService)
     {
-        $this->carrierService = $carrierService;
+        $this->shipmentService = $shipmentService;
         parent::__construct();
     }
     protected function configure()
@@ -24,6 +24,6 @@ class TrackShipmentsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->carrierService->updateShipmentsStatus();
+        $this->shipmentService->updateShipmentsStatus();
     }
 }

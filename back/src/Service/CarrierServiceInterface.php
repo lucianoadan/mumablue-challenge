@@ -14,10 +14,7 @@ interface CarrierServiceInterface {
      */
     public function getStatus(Shipment $shipmentData);
 
-    /**
-     * Update the status of all undelivered shipments
-     */
-    public function updateShipmentsStatus();
+   
 
     
 }
