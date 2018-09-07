@@ -74,7 +74,7 @@ export class ShipmentPanelComponent {
     this.shipmentFormModal.componentInstance.countryOptions = this.countryOptions;
 
     this.shipmentFormModal.componentInstance.onSuccess.subscribe((shipment) => {
-      this.shipments.unshift(shipment);
+      this.fetchShipments();
       // do something
     });
 
