@@ -3,6 +3,9 @@ import { Shipment } from '../../models/shipment';
 import { ShipmentHeader } from '../../models/shipment-header';
 import { ShipmentService } from '../../services/shipment.service';
 
+import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ReviewDetailComponent } from '../review-detail';
+
 
 @Component({
   selector: 'app-shipment-list-item',
@@ -13,7 +16,9 @@ export class ShipmentListItemComponent {
   @Input() shipmentHdr: ShipmentHeader = null;
   shipment: Shipment = null;
   opened = false;
-  constructor(private shipmentService: ShipmentService) { }
+  reviewModal: NgbModalRef;
+  constructor(private shipmentService: ShipmentService, private modalService: NgbModal) { }
+  
   get lastStatusColor() {
     return this.shipmentHdr.statusGroupColor !== null ? 'text-' + this.shipmentHdr.statusGroupColor : ''
   }
@@ -45,4 +50,10 @@ export class ShipmentListItemComponent {
     }
   }
 
+  openReview() {
+    this.reviewModal = this.modalService.open(ReviewDetailComponent, { size: 'lg', keyboard: false });
+    this.reviewModal.componentInstance.review = this.shipment.review;
+    this.reviewModal.componentInstance.modal = this.reviewModal;
+
+  }
 }

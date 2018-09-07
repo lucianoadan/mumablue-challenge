@@ -3,20 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ReviewFormComponent } from './components/review-form';
 
+import { ReviewFormComponent } from './components/review-form';
 import { ReviewsRoutingModule } from './reviews-routing.module';
 
 
 import { ReviewService } from './services/review.service';
 
 import { HttpClientModule } from '@angular/common/http';
-import { CoreModule } from '@app/core/core.module';
-
-
-
-
+import { SharedModule } from '@app/core/shared.module';
 
 const COMPONENTS = [
   ReviewFormComponent
@@ -28,7 +23,7 @@ const COMPONENTS = [
     HttpClientModule,
     ReactiveFormsModule,
     ReviewsRoutingModule,
-    CoreModule,
+    SharedModule,
     ToastrModule.forRoot(),
     NgbModule.forRoot()
   ],

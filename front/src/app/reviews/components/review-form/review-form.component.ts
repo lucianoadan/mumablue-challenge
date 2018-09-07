@@ -27,20 +27,36 @@ export class ReviewFormComponent {
   forceLight = [0, 0];
   shipment: Shipment = null;
   sent: boolean = false;
-  invalid: boolean = false;
+  invalid: string = null;
+  loadingForm: boolean = true;
+
   public constructor(private route: ActivatedRoute, private shipmentService: ShipmentService, private reviewService: ReviewService, private toastrService: ToastrService, private fb: FormBuilder) {
     this.route.params.subscribe(params => {
-
+      this.loadingForm = true;
+      this.invalid = null;
+      this.form = null;
+      this.shipment = null;
+      
       const id = Number(params['id']);
       this.shipmentService.getShipment(id).subscribe((shipment: Shipment) => {
         if (shipment === null) {
-          this.invalid = true;
+          this.invalid = 'notfound';
+          this.loadingForm = false;
+
+          return;
+        }
+
+        if(typeof shipment.review !== "undefined" || shipment.review === null){
+          this.invalid = 'done';
+          this.loadingForm = false;
           return;
         }
         this.shipment = shipment;
+        
         this.reviewService.getQuestions().subscribe((questions: Question[]) => {
           this.questions = questions;
           this.buildForm(fb);
+          this.loadingForm = false;
         });
       })
 
@@ -68,15 +84,27 @@ export class ReviewFormComponent {
 
   }
 
+  /**
+   * Update the rating for question[i]
+   * @param rating rating for question at index i
+   * @param i index of question
+   */
   public rate(rating, i) {
     const arrControl = this.form.get('answers') as FormArray;
     arrControl.at(i).get('rating').setValue(rating);
-    console.log('rate question', i, ' with ', rating);
   }
+  /**
+   * Lights on the stars on hover
+   * @param i question where the mouse is over
+   * @param rating rating where the mouse is over
+   */
   public forceLightOn(i, rating) {
     this.forceLight = [i, rating];
   }
-  public clearForceLight(i, rating) {
+  /**
+   * Clear the forced lights
+   */
+  public clearForceLight() {
     this.forceLight = [0, 0];
   }
   public lightOn(i, rating) {
