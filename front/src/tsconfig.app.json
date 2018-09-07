@@ -6,7 +6,9 @@
     "outDir": "../out-tsc/app",
     "types": [],
     "paths": {
-      "@app/*": ["src/app/*"]
+      "@app/*": ["src/app/*"],
+      "@shipments/*": ["src/app/shipment/*"],
+      "@reviews/*": ["src/app/reviews/*"]
     },
   },
   "exclude": [
