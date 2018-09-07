@@ -38,9 +38,18 @@ CREATE TABLE `address` (
   PRIMARY KEY (`id`),
   KEY `IDX_D4E6F81F92F3E70` (`country_id`),
   CONSTRAINT `FK_D4E6F81F92F3E70` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `address`
+--
+
+LOCK TABLES `address` WRITE;
+/*!40000 ALTER TABLE `address` DISABLE KEYS */;
+INSERT INTO `address` VALUES (282,'Sergio López Rico','Sergio','López Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','628178737'),(283,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','62817837'),(284,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','523432'),(285,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','62323');
+/*!40000 ALTER TABLE `address` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `country`
@@ -82,7 +91,15 @@ CREATE TABLE `migration_versions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `migration_versions`
+--
 
+LOCK TABLES `migration_versions` WRITE;
+/*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
+INSERT INTO `migration_versions` VALUES ('20180905192459'),('20180905193128'),('20180905193812'),('20180906203116'),('20180906203214'),('20180906220133'),('20180906222514'),('20180907091652');
+/*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `qaquestion`
@@ -124,9 +141,20 @@ CREATE TABLE `qareview` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_E09829537BE036FC` (`shipment_id`),
   CONSTRAINT `FK_E09829537BE036FC` FOREIGN KEY (`shipment_id`) REFERENCES `shipment` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `qareview`
+--
+
+LOCK TABLES `qareview` WRITE;
+/*!40000 ALTER TABLE `qareview` DISABLE KEYS */;
+INSERT INTO `qareview` VALUES (26,'2018-09-07 12:53:32',32);
+/*!40000 ALTER TABLE `qareview` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `qareview_answer`
 --
 
@@ -144,12 +172,18 @@ CREATE TABLE `qareview_answer` (
   KEY `IDX_2679279B1E27F6BF` (`question_id`),
   CONSTRAINT `FK_2679279B1E27F6BF` FOREIGN KEY (`question_id`) REFERENCES `qaquestion` (`id`),
   CONSTRAINT `FK_2679279B3E2E969B` FOREIGN KEY (`review_id`) REFERENCES `qareview` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `qareview_answer`
 --
+
+LOCK TABLES `qareview_answer` WRITE;
+/*!40000 ALTER TABLE `qareview_answer` DISABLE KEYS */;
+INSERT INTO `qareview_answer` VALUES (7,26,1,4,NULL),(8,26,2,NULL,'Ninguno'),(9,26,3,NULL,'Todo correcto');
+/*!40000 ALTER TABLE `qareview_answer` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `shipment`
@@ -166,15 +200,22 @@ CREATE TABLE `shipment` (
   `ship_to_addr_id` int(11) NOT NULL,
   `delivery_instructions` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
+  `est_delivery_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_2CB20DC43427FD5` (`ship_to_addr_id`),
   CONSTRAINT `FK_F5299398EBF23851` FOREIGN KEY (`ship_to_addr_id`) REFERENCES `address` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `shipment`
 --
+
+LOCK TABLES `shipment` WRITE;
+/*!40000 ALTER TABLE `shipment` DISABLE KEYS */;
+INSERT INTO `shipment` VALUES (30,'P0001','D4aB2Uhuvj','fake_label.jpg',283,'','2018-09-07 12:48:53','2018-09-13 12:52:47'),(31,'P002','EadLzp26Zk','fake_label.jpg',284,'','2018-09-07 12:49:54','2018-09-14 12:49:54'),(32,'P0003','njFePQgygr','fake_label.jpg',285,'','2018-09-07 12:51:24','2018-09-09 12:52:48');
+/*!40000 ALTER TABLE `shipment` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `status`
@@ -242,18 +283,24 @@ CREATE TABLE `status_update` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status_id` int(11) NOT NULL,
   `shipment_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `IDX_256F9D356BF700BD` (`status_id`),
   KEY `IDX_256F9D357BE036FC` (`shipment_id`),
   CONSTRAINT `FK_256F9D356BF700BD` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`),
   CONSTRAINT `FK_256F9D357BE036FC` FOREIGN KEY (`shipment_id`) REFERENCES `shipment` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=224 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `status_update`
 --
+
+LOCK TABLES `status_update` WRITE;
+/*!40000 ALTER TABLE `status_update` DISABLE KEYS */;
+INSERT INTO `status_update` VALUES (219,21,30,'2018-09-07 12:48:53'),(220,13,31,'2018-09-07 12:49:54'),(221,14,32,'2018-09-07 12:51:24'),(222,60,30,'2018-09-07 12:52:47'),(223,64,32,'2018-09-07 12:52:48');
+/*!40000 ALTER TABLE `status_update` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `vw_actual_statuses`
@@ -336,4 +383,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-07  3:15:33
+-- Dump completed on 2018-09-07 14:56:47
