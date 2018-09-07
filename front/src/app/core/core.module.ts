@@ -9,6 +9,7 @@ import { PaginationComponent } from './components/pagination.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormFieldErrorsComponent } from './components/form-field-errors.component';
 
+
 const COMPONENTS = [
   FormFieldComponent,
   FormFieldErrorsComponent,

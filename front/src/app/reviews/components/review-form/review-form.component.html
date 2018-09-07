@@ -1,0 +1,63 @@
+<div class="container text-center" style="margin-top:20px">
+    <ng-container *ngIf="form === null">
+        <ng-container *ngIf="!invalid">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-info mb-0"><i class="fas fa-spin fa-spinner"></i> Cargando encuesta...</div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="invalid">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-info mb-0"><i class="fas fa-info"></i> El enlace para realizar la encuesta es
+                        inválido.
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="sent">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4>Muchas gracias!</h4>
+                <div>Esperamos que nuestro servicio haya sido de tu satisfacción.</div>
+            </div>
+        </div>
+    </ng-container>
+    <form *ngIf="form && !sent" [formGroup]="form" (ngSubmit)="onSubmit()" #myForm="ngForm" novalidate>
+        <div class="card text-left">
+            <div class="card-body">
+                <h4>Encuesta de calidad</h4>
+                <div class="mb-5">
+                    Hola {{this.shipment.shipToAddr.firstname}}!<br> Nos encantaría que nos dedicases un minuto de tu tiempo
+                    a responder estas preguntas para mejorar nuestro servicio.
+                </div>
+
+
+                <div [formGroup]="form">
+                    <div class="question-line" formArrayName="answers" *ngFor="let item of form.get('answers').controls; let i = index;">
+                        <h5>{{ questions[i].question }}</h5>
+                        <div [formGroupName]="i" *ngIf="questions[i].enableRating">
+                            <ul class="star-list clearfix">
+                                <li (mouseenter)="forceLightOn(i, r)" (mouseleave)="clearForceLight()" (click)="rate(r, i)" [ngClass]="lightOn(i,r) ? 'on' : ''"
+                                    *ngFor="let r of ratings"><i class="fas fa-star"></i></li>
+                            </ul>
+                            <form-field-errors [control]="item"></form-field-errors>
+                        </div>
+                        <div [formGroupName]="i" *ngIf="questions[i].enableComment">
+                            <textarea formControlName="comment" class="form-control" rows="2"></textarea>
+                            <form-field-errors [control]="item"></form-field-errors>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="!form.valid">
+                    <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+                    Enviar valoración
+                </button>
+
+            </div>
+        </div>
+    </form>
+</div>

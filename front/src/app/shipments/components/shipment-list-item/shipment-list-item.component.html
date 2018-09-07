@@ -6,11 +6,10 @@
             </div>
             <div class="last-status">
                 <span class="shipment-status {{lastStatusColor}}">
-                    {{ shipmentHdr.statusName }}
+                    {{ headerStatusName }}
                 </span>
             </div>
             <div class="last-update">
-                <i class="fas fa-caret-down float-right"></i>
                 <i class="fas fa-clock"></i> {{ shipmentHdr?.createdAt | date: 'dd/MM/yyyy HH:mm'}}
             </div>
         </div>
@@ -40,6 +39,7 @@
                     </tbody>
                 </table>
             </div>
+
             <div class="col-md-12 col-lg-6">
                 <h5>Order Details</h5>
                 <ul class="list-unstyled">

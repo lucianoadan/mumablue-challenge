@@ -15,7 +15,10 @@
     margin-left: 5px;
 }
 
-.shipment-list-item .shipment-details{ display: none; }
+.shipment-list-item .shipment-details{ 
+    background: #f9f9f9;
+    display: none; 
+}
 /** OPENED **/
 
 .shipment-list-item.opened {
@@ -34,7 +37,7 @@
 }
 
 .shipment-cols > .order-ref{
-    width: 70px;
+    width: 90px;
 }
 .shipment-cols > .last-update{
     float: right;

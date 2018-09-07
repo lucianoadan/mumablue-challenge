@@ -17,6 +17,11 @@ export class ShipmentListItemComponent {
   get lastStatusColor() {
     return this.shipmentHdr.statusGroupColor !== null ? 'text-' + this.shipmentHdr.statusGroupColor : ''
   }
+  get headerStatusName() {
+    if (typeof this.shipmentHdr.statusName === "undefined")
+      return 'No hay estado disponible';
+    return this.shipmentHdr.statusName
+  }
   get mailToLink() {
     const subject = "Información sobre pedido " + this.shipment.orderRef;
     const body = "Estimado " + this.shipment.shipToAddr.firstname + " " + this.shipment.shipToAddr.lastname + ' ,';
@@ -27,12 +32,16 @@ export class ShipmentListItemComponent {
   }
 
   toggle() {
-    this.opened = !this.opened;
-    if (this.opened && this.shipment === null) {
+
+    if (!this.opened && this.shipment === null) {
       this.shipmentService.getShipment(this.shipmentHdr.id)
         .subscribe((shipment: Shipment) => {
           this.shipment = shipment
+          this.opened = true;
         })
+    }
+    else {
+      this.opened = !this.opened;
     }
   }
 

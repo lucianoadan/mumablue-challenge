@@ -7,7 +7,10 @@ export const routes: Routes = [
   {
     path: 'shipments',
     loadChildren: '@app/shipments/shipments.module#ShipmentsModule',
-
+  },
+  {
+    path: 'review',
+    loadChildren: '@app/reviews/reviews.module#ReviewsModule',
   }
   //{ path: '**', component: NotFoundPageComponent },
 ];

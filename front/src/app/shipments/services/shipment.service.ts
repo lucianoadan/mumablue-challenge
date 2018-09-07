@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { map, catchError } from 'rxjs/operators';
 
 import { Observable, ObservableInput, throwError } from 'rxjs';
-import { Subscriber } from 'rxjs/Subscriber';
+
 
 import { Shipment } from '../models/shipment';
 import { ApiResponse } from '@app/core/models/api-response';
@@ -15,7 +15,7 @@ import { Status } from '../models/status';
 import { StatusGroup } from '../models/status-group';
 import { ToastrService } from 'ngx-toastr';
 import { ShipmentHeader } from '../models/shipment-header';
-
+import { handleServiceError } from '@app/core/utils/serviceErrorHandler';
 @Injectable()
 export class ShipmentService {
 
@@ -27,13 +27,14 @@ export class ShipmentService {
      * Get all shipments headers
      */
     getShipments(params: any = {}): Observable<ShipmentHeader[]> {
+
         params.lightweight = 1;
         let header = { params: params };
         return this.http
             .get<ApiResponse<ShipmentHeader[]>>(this.API_BASE_URL + '/shipments', header)
             .pipe(
                 map(response => response.payload || null),
-                catchError(this.handleError.bind(this))
+                catchError(handleServiceError.bind(this))
             );
     }
 
@@ -43,10 +44,10 @@ export class ShipmentService {
     getShipment(id: any = {}): Observable<Shipment> {
         let header = { params: { id: id } };
         return this.http
-            .get<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments/'+id)
+            .get<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments/' + id)
             .pipe(
                 map(response => response.payload || null),
-                catchError(this.handleError.bind(this))
+                catchError(handleServiceError.bind(this))
             );
     }
 
@@ -58,7 +59,7 @@ export class ShipmentService {
             .get<ApiResponse<Country[]>>(this.API_BASE_URL + '/countries/available')
             .pipe(
                 map(response => response.payload || null),
-                catchError(this.handleError.bind(this))
+                catchError(handleServiceError.bind(this))
             );
     }
 
@@ -70,7 +71,7 @@ export class ShipmentService {
             .get<ApiResponse<Status[]>>(this.API_BASE_URL + '/status/actual')
             .pipe(
                 map(response => response.payload || null),
-                catchError(this.handleError.bind(this))
+                catchError(handleServiceError.bind(this))
             );
     }
 
@@ -82,7 +83,7 @@ export class ShipmentService {
             .get<ApiResponse<StatusGroup[]>>(this.API_BASE_URL + '/status-group')
             .pipe(
                 map(response => response.payload || null),
-                catchError(this.handleError.bind(this))
+                catchError(handleServiceError.bind(this))
             );
     }
 
@@ -96,32 +97,8 @@ export class ShipmentService {
             .put<ApiResponse<Shipment>>(this.API_BASE_URL + '/shipments', shipment)
             .pipe(
                 map(response => response.payload || null),
-                catchError(this.handleError.bind(this))
+                catchError(handleServiceError.bind(this))
             );
     }
 
-    private handleError(error: any, caught: Observable<any>): ObservableInput<{}> {
-        let finalError;
-        if (error instanceof HttpErrorResponse) {
-
-            if (!navigator.onLine) { // Server or connection error happened
-                finalError = { message: 'Parece que no tienes conexión en tu dispositivo.' };
-            }
-            else if (error.status === 0) {
-                finalError = { message: 'Servidor no disponible.' };
-                // Custom server exception
-            } else if (typeof error.error !== "undefined") {
-                finalError = error.error;
-            }
-            else {
-                finalError = error;
-            }
-        }
-        else {
-            finalError = { message: "Error desconocido." };
-        }
-
-        this.toastrService.error(finalError.message, 'Error');
-        return throwError(finalError);
-    }
 }
