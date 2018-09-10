@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
 use \Datetime;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ShipmentRepository")
  * @UniqueEntity("orderRef")
  */
 class Shipment
