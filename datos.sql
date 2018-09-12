@@ -30,16 +30,6 @@ VALUES
 	(17,'SG','Singapur',1,1),
 	(18,'NZ','Nueva Zelanda',1,1);
 
-INSERT INTO `migration_versions` (`version`)
-VALUES
-	('20180905192459'),
-	('20180905193128'),
-	('20180905193812'),
-	('20180906203116'),
-	('20180906203214'),
-	('20180906220133'),
-	('20180906222514'),
-	('20180907091652');
 
 INSERT INTO `qaquestion` (`id`, `question`, `enable_comment`, `enable_rating`)
 VALUES
