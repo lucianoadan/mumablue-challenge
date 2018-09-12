@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare (strict_types = 1);
 
 namespace DoctrineMigrations;
 
@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20180912120148 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
@@ -33,9 +33,11 @@ final class Version20180912120148 extends AbstractMigration
         $this->addSql('ALTER TABLE qareview_answer ADD CONSTRAINT FK_2679279B3E2E969B FOREIGN KEY (review_id) REFERENCES qareview (id)');
         $this->addSql('ALTER TABLE qareview_answer ADD CONSTRAINT FK_2679279B1E27F6BF FOREIGN KEY (question_id) REFERENCES qaquestion (id)');
 
+        $this->addSql('CREATE VIEW `vw_actual_statuses` AS SELECT distinct `s`.`id` AS `id`, `s`.`status_group_id` AS `status_group_id`, `s`.`code` AS `code`, `s`.`name` AS `name` FROM ((`shipment` `sh` join `status_update` `su`) join `status` `s`) where ((`su`.`shipment_id` = `sh`.`id`) and (`su`.`status_id` = `s`.`id`) and (`su`.`created_at` = (select max(`su2`.`created_at`) from `status_update` `su2` where (`su2`.`shipment_id` = `su`.`shipment_id`))))');
+        $this->addSql('CREATE VIEW `vw_shipment_hdr` AS SELECT `sh`.`id` AS `id`, `sh`.`order_ref` AS `order_ref`, `s`.`id` AS `status_id`, `s`.`name` AS `status_code`, `s`.`name` AS `status_name`, `s`.`status_group_id` AS `status_group_id`, `sg`.`code` AS `status_group_code`, `sg`.`name` AS `status_group_name`, `sg`.`color` AS `status_group_color`, `su`.`created_at` AS `created_at` FROM (((`shipment` `sh` join `status` `s`) join `status_update` `su`) join `status_group` `sg`) where ((`su`.`shipment_id` = `sh`.`id`) and (`s`.`status_group_id` = `sg`.`id`) and (`su`.`status_id` = `s`.`id`) and (`su`.`created_at` = (select max(`su2`.`created_at`) from `status_update` `su2` where (`su2`.`shipment_id` = `su`.`shipment_id`)))) union select `sh`.`id` AS `id`,`sh`.`order_ref` AS `order_ref`,NULL AS `NULL`,NULL AS `NULL`,NULL AS `NULL`,NULL AS `NULL`,NULL AS `NULL`,NULL AS `NULL`,NULL AS `NULL`,`sh`.`created_at` AS `created_at` from `shipment` `sh` where (not(exists(select `su`.`id` from `status_update` `su` where (`su`.`shipment_id` = `sh`.`id`)))) order by `created_at` desc');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
