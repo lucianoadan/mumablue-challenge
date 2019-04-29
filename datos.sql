@@ -1,14 +1,3 @@
-SET FOREIGN_KEY_CHECKS=0;
-
-INSERT INTO `address` (`id`, `company_name`, `firstname`, `lastname`, `address`, `address2`, `city`, `zip`, `state`, `country_id`, `email`, `phone`)
-VALUES
-	(282,'Sergio López Rico','Sergio','López Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','628178737'),
-	(283,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','62817837'),
-	(284,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','523432'),
-	(285,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','62323'),
-	(286,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','5232'),
-	(287,'Sergio López Rico','Sergio','Rico','C/ Milan 31 9ºD','','Torrejon de Ardoz','28850','Madrid',1,'sergio.lopezr@edu.uah.es','5232');
-
 INSERT INTO `country` (`id`, `code`, `name`, `invoice`, `available_shipping`)
 VALUES
 	(1,'ES','España',0,1),
